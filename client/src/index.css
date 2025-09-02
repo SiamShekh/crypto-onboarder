@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: all;
+}
+
+@theme {
+  --font-bebas: "Bebas Neue", "cursive";
+  --font-monda: "Monda", "sans-serif";
+  --font-montserrat: "Montserrat", "sans-serif";
+  --font-opensans: "Open Sans", "sans-serif";
+  --font-roboto: "Roboto", "'sans-serif";
+  --font-tektur: "Tektur", "cursive";
+  --font-style-script: "Style Script", "cursive";
+}
+
+* {
+  touch-action: manipulation;
+}
+
+
+@keyframes floatUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+}
+
+.clickAnimation {
+  position: fixed;
+  z-index: 9999;
+  /* font-size: 12px; */
+  color: white;
+  /* background: rgba(0, 0, 0, 0.6); */
+  /* padding: 2px 6px; */
+  /* border-radius: 4px; */
+  pointer-events: none;
+  animation: floatUp 1s forwards;
+}
