@@ -4,8 +4,8 @@ import { UserVaildation } from "../utils/Middleware";
 
 const UserRoute = Router();
 UserRoute.post("/login", user.create_user);
-UserRoute.get("/me",UserVaildation, user.getUser);
-UserRoute.patch("/refer-alart",UserVaildation, user.claimReferReward);
+UserRoute.get("/me", UserVaildation, user.getUser);
+// UserRoute.patch("/refer-alart",UserVaildation, user.claimReferReward);
 
 
 export default UserRoute;

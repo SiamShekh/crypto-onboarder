@@ -12,62 +12,17 @@ datasource db {
 model User {
   id Int @id @default(autoincrement())
 
-  /// User's full name
-  name String
+  /// User Solona Address
+  solAddress String
 
   /// Optional username (Telegram handle)
   username String?
 
-  /// Telegram ID (must be unique)
-  tgId String @unique
-
-  /// Balance in platform's internal points
-  balance Int @default(0)
-
-  /// Balance in USDT
-  usdt Float @default(0)
-
-  /// Telegram ID of the user who referred this user (if any)
-  referredByTgId String?
-
-  /// This user's unique referral code
-  referralCode String
-
-  /// When the user joined the system
-  joinedAt DateTime @default(now())
-
-  /// Last time the user was seen online
-  lastSeenAt DateTime?
-
-  /// Whether the user has joined the required Telegram channel
-  isChannelJoined Boolean @default(false)
-
-  /// Whether the user is a moderator
-  isModerator Boolean @default(false)
-
-  /// Whether the user is blocked from the system
-  isBlocked Boolean @default(false)
-
-  /// Whether the user has deleted their account
-  isDeleted Boolean @default(false)
-
-  /// Whether the user has seen refer alart
-  isReferAlartShow Boolean @default(false)
+  /// last wallet connect time
+  connectAt DateTime @default(now())
 
   /// All recorded IP addresses for the user
   ips IP[]
-
-  /// Joining reward details (if the user received USDT for joining via referral)
-  joiningRewards JoiningRewardByReferral[]
-
-  /// Records of tap reward claims by the user
-  tapRewards TapReward[]
-
-  /// Referrals made by this user
-  referralsMade ReferralReward[] @relation("ReferrerRelation")
-
-  /// Referrals where this user was referred by someone else
-  referralsReceived ReferralReward[] @relation("ReferredUserRelation")
 }
 
 /// Stores user IP details and geo-location metadata for auditing or fraud prevention.
@@ -75,10 +30,10 @@ model IP {
   id Int @id @default(autoincrement())
 
   /// Telegram ID of the associated user
-  userTgId String
+  userId Int
 
   /// Relation to the User entity
-  user User @relation(fields: [userTgId], references: [tgId])
+  user User @relation(fields: [userId], references: [id])
 
   /// IP address
   ip String
@@ -108,65 +63,5 @@ model IP {
   info String
 
   /// When the IP record was created
-  createdAt DateTime @default(now())
-}
-
-/// Tracks individual tap reward claims by users.
-model TapReward {
-  id Int @id @default(autoincrement())
-
-  /// Telegram ID of the user who claimed the reward
-  userTgId String
-
-  /// Relation to the User entity
-  user User @relation(fields: [userTgId], references: [tgId])
-
-  /// Tap reward amount claimed (in points or internal unit)
-  reward Int
-
-  /// Timestamp of the claim
-  claimedAt DateTime @default(now())
-}
-
-/// Stores referral reward details when a user joins using a referral code/link.
-model ReferralReward {
-  id Int @id @default(autoincrement())
-
-  /// Telegram ID of the referrer
-  referrerTgId String
-
-  /// Reference to the referrer User
-  referrer User @relation("ReferrerRelation", fields: [referrerTgId], references: [tgId])
-
-  /// Telegram ID of the new user who was referred
-  referredUserTgId String
-
-  /// Reference to the referred User
-  referredUser User @relation("ReferredUserRelation", fields: [referredUserTgId], references: [tgId])
-
-  /// Amount of USDT rewarded to the referrer
-  rewardUSDT Float
-
-  /// Timestamp when the referral reward was given
-  createdAt DateTime @default(now())
-}
-
-/// Represents a joining bonus (in USDT) given to a user who joined through a referral.
-model JoiningRewardByReferral {
-  id Int @id @default(autoincrement())
-
-  /// Telegram ID of the user who received the reward
-  userTgId String
-
-  /// Relation to the User entity
-  user User @relation(fields: [userTgId], references: [tgId])
-
-  /// Amount of USDT awarded for joining via referral
-  rewardUSDT Float
-
-  /// Whether the reward has been claimed by the user
-  isClaimed Boolean @default(false)
-
-  /// When the reward entry was created
   createdAt DateTime @default(now())
 }

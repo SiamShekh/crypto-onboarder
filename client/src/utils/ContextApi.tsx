@@ -5,25 +5,10 @@ export const ContextValues = createContext<null | {
     user: {
         isLoading: boolean,
         data: {
-            name: string,
-            balance: number,
-            isDelete: boolean,
-            isChannelJoined: boolean
-            isBlock: boolean
-            joinedAt: Date
-            rank: number
-            tgId: string
-            referBy: string
-            frens: number
-            isReferAlartShow: boolean,
-            friends: {
-                referredUser: {
-                    name: string
-                    username: string
-                }
-                rewardUSDT: number
-                createdAt: string
-            }[]
+            id: number
+            solAddress: string
+            username?: string
+            connectAt: string
         }
     }
 }>(null);

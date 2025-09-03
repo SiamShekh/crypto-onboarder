@@ -8,6 +8,7 @@ const BaseApi = createApi({
         prepareHeaders(headers) {
             headers.append("authorization", sessionStorage.getItem("token") as string)
         },
+        credentials: "include"
     }),
     endpoints: () => ({}),
     tagTypes: ["user", "telegram","tap"]
