@@ -22,7 +22,8 @@ model User {
   connectAt DateTime @default(now())
 
   /// All recorded IP addresses for the user
-  ips IP[]
+  ips     IP[]
+  project project[]
 }
 
 /// Stores user IP details and geo-location metadata for auditing or fraud prevention.
@@ -64,4 +65,19 @@ model IP {
 
   /// When the IP record was created
   createdAt DateTime @default(now())
+}
+
+/// Represents a project submitted by a user.
+model project {
+  id      Int      @id @default(autoincrement()) // Unique project ID that store on database
+  userId  Int // ID of the user who submitted the project
+  user    User     @relation(fields: [userId], references: [id]) // Relation to the User entity
+  name    String // Name of the project
+  tagline String // Tagline of the project
+  image   String // URL to the project's image/logo
+  reward  String // how much reward the project offers
+  task    String[] // List of tasks associated with the project
+
+  createdAt DateTime @default(now()) // Timestamp when the project was created
+  updatedAt DateTime @updatedAt // Timestamp when the project was last updated
 }

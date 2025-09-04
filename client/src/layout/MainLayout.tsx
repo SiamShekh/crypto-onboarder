@@ -24,8 +24,8 @@ const MainLayout = () => {
         },
         {
             id: 3,
-            name: "Create Token",
-            href: "/creation"
+            name: "Add Project",
+            href: "/add-project"
         },
         {
             id: 4,
