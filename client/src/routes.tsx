@@ -5,6 +5,7 @@ import { SolanaProvider } from "./utils/SolanaProvider";
 import ContextApi from "./utils/ContextApi";
 import AddProject from "./page/AddProject";
 import Explore from "./page/Explore";
+import Profile from "./page/Profile";
 
 const Routes = createBrowserRouter([
     {
@@ -27,7 +28,11 @@ const Routes = createBrowserRouter([
             {
                 path: "explore",
                 element: <Explore />
-            }
+            },
+            {
+                path: "profile",
+                element: <Profile />
+            },
         ]
     }
 ]);

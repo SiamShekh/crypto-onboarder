@@ -20,7 +20,7 @@ const ContextApi = ({ children }: { children: ReactNode }) => {
         <ContextValues.Provider value={{
             user: {
                 isLoading: userApi?.isLoading,
-                data: userApi?.data
+                data: userApi?.data?.user
             },
         }}>
             {children}

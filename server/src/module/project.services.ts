@@ -45,16 +45,33 @@ const getProjects = CatchAsync(async (req, res) => {
             name: true,
             tagline: true,
             reward: true,
-
         }
     })
+
+    res.status(200).json(projects);
+});
+
+const getMyProjects = CatchAsync(async (req, res) => {
+    const projects = await prisma.project.findMany({
+        where: {
+            userId: req?.user?.id
+        },
+        select: {
+            id: true,
+            image: true,
+            name: true,
+            tagline: true,
+            reward: true,
+        }
+    });
 
     res.status(200).json(projects);
 })
 
 const project = {
     addProject,
-    getProjects
+    getProjects,
+    getMyProjects
 }
 
 export default project;

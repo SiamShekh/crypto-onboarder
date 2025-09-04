@@ -10,14 +10,21 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
             }),
             invalidatesTags: ["project"]
         }),
-        getProjects : builder.query({
-            query: ({search, page}:{search?: string, page?: number})=>({
+        getProjects: builder.query({
+            query: ({ search, page }: { search?: string, page?: number }) => ({
                 url: "/project",
                 method: "GET",
-                params: {search, page}
+                params: { search, page }
             }),
             providesTags: ["project"]
-        })
+        }),
+        getMyProjects: builder.query({
+            query: () => ({
+                url: "/project/me",
+                method: "GET",
+            }),
+            providesTags: ["project"]
+        }),
     })
 });
 
@@ -26,6 +33,10 @@ const project = {
     getProjects: {
         lazy: ProjectEndpoint.useLazyGetProjectsQuery,
         use: ProjectEndpoint.useGetProjectsQuery
+    },
+    getMyProjects: {
+        lazy: ProjectEndpoint.useLazyGetMyProjectsQuery,
+        use: ProjectEndpoint.useGetMyProjectsQuery
     }
 }
 
