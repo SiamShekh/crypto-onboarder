@@ -1,14 +1,19 @@
 import { useForm } from "react-hook-form";
 import project from "../api/Project";
 import { Project } from "..";
+import { RiDatabaseLine } from "react-icons/ri";
 
 const Explore = () => {
     const { setValue, watch } = useForm();
 
-    const { data, isFetching } = project.getProjects.use({
+    const exploreData = project.getProjects.use({
         search: watch("search") || "",
         page: Number(watch("page") || 0),
     });
+
+    console.log(exploreData?.data?.length);
+
+
     return (
         <div className="max-w-7xl mx-auto">
             <div className="my-10">
@@ -35,7 +40,7 @@ const Explore = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {
-                    isFetching ?
+                    exploreData?.isFetching ?
                         (
                             <>
                                 <LoadingSkelaton />
@@ -43,13 +48,13 @@ const Explore = () => {
                                 <LoadingSkelaton />
                             </>
                         ) :
-                        data?.length === 0 ? (
-                            <div className="col-span-full py-10">
+                        exploreData?.data?.length === undefined || exploreData?.data?.length === 0 ? (
+                            <div className="col-span-full py-10 flex flex-col items-center justify-center gap-5">
+                                <RiDatabaseLine className="text-7xl text-center" />
                                 <p className="font-montserrat text-center">No data found in this page.</p>
-                                
                             </div>
                         ) :
-                            data?.map((item: Project) => (
+                            exploreData?.data?.map((item: Project) => (
                                 <div key={item?.id} className="bg-white/5 rounded-2xl p-3">
                                     <div className="flex items-center justify-between mb-5">
                                         <div className="flex items-center gap-3">

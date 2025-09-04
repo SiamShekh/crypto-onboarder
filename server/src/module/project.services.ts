@@ -45,7 +45,7 @@ const getProjects = CatchAsync(async (req, res) => {
             name: true,
             tagline: true,
             reward: true,
-            
+
         }
     })
 

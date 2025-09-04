@@ -5,6 +5,6 @@ import { UserVaildation } from "../utils/Middleware";
 const ProjectRoute = Router();
 
 ProjectRoute.post("/", UserVaildation, project.addProject);
-ProjectRoute.get("/", UserVaildation, project.getProjects);
+ProjectRoute.get("/",  project.getProjects);
 
 export default ProjectRoute;
