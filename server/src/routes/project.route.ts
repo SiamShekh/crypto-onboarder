@@ -3,8 +3,8 @@ import project from "../module/project.services";
 import { UserVaildation } from "../utils/Middleware";
 
 const ProjectRoute = Router();
-ProjectRoute.post("/", UserVaildation, project.addProject);
-// UserRoute.patch("/refer-alart",UserVaildation, user.claimReferReward);
 
+ProjectRoute.post("/", UserVaildation, project.addProject);
+ProjectRoute.get("/", UserVaildation, project.getProjects);
 
 export default ProjectRoute;

@@ -10,11 +10,23 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
             }),
             invalidatesTags: ["project"]
         }),
+        getProjects : builder.query({
+            query: ({search, page}:{search?: string, page?: number})=>({
+                url: "/project",
+                method: "GET",
+                params: {search, page}
+            }),
+            providesTags: ["project"]
+        })
     })
 });
 
 const project = {
     NewProject: ProjectEndpoint.useNewProjectMutation,
+    getProjects: {
+        lazy: ProjectEndpoint.useLazyGetProjectsQuery,
+        use: ProjectEndpoint.useGetProjectsQuery
+    }
 }
 
 export default project;

@@ -4,6 +4,7 @@ import MainLayout from "./layout/MainLayout";
 import { SolanaProvider } from "./utils/SolanaProvider";
 import ContextApi from "./utils/ContextApi";
 import AddProject from "./page/AddProject";
+import Explore from "./page/Explore";
 
 const Routes = createBrowserRouter([
     {
@@ -20,8 +21,12 @@ const Routes = createBrowserRouter([
                 element: <Home />
             },
             {
-                path: "/add-project",
+                path: "add-project",
                 element: <AddProject />
+            },
+            {
+                path: "explore",
+                element: <Explore />
             }
         ]
     }
