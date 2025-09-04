@@ -66,12 +66,61 @@ const getMyProjects = CatchAsync(async (req, res) => {
     });
 
     res.status(200).json(projects);
-})
+});
+
+const getSpacificProject = CatchAsync(async (req, res) => {
+    const { id } = req.query;
+
+    if (!id) {
+        throw new Error("Project id is required");
+    }
+
+    const project = await prisma.project.findUniqueOrThrow({
+        where: {
+            id: Number(id)
+        },
+    });
+
+    res.status(200).json(project);
+});
+
+const updateProject = CatchAsync(async (req, res) => {
+    const { id } = req.params;
+    const body = req.body;
+    
+    if (!id) {
+        throw new Error("Project id is required");
+    }
+
+    const result = await prisma.$transaction(async (transactionClient) => {
+        await transactionClient.project.findUniqueOrThrow({
+            where: {
+                id: Number(id),
+                userId: req?.user?.id
+            },
+        });
+
+        const updateProject = await transactionClient.project.update({
+            where: {
+                id: Number(id),
+                userId: req?.user?.id
+            },
+            data: body
+        });
+
+        return updateProject;
+    })
+
+
+    res.status(200).json(result);
+});
 
 const project = {
     addProject,
     getProjects,
-    getMyProjects
+    getMyProjects,
+    getSpacificProject,
+    updateProject
 }
 
 export default project;

@@ -6,6 +6,7 @@ import ContextApi from "./utils/ContextApi";
 import AddProject from "./page/AddProject";
 import Explore from "./page/Explore";
 import Profile from "./page/Profile";
+import EditProject from "./page/EditProject";
 
 const Routes = createBrowserRouter([
     {
@@ -32,6 +33,10 @@ const Routes = createBrowserRouter([
             {
                 path: "profile",
                 element: <Profile />
+            },
+            {
+                path: "edit-project/:id",
+                element: <EditProject />
             },
         ]
     }

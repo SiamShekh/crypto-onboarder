@@ -10,6 +10,21 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
             }),
             invalidatesTags: ["project"]
         }),
+        UpdateProject: builder.mutation({
+            query: ({ id, body }: {
+                id: string, body: {
+                    name: string;
+                    tagline: string;
+                    reward: string;
+                    task: string[];
+                }
+            }) => ({
+                url: `/project/update/${id}`,
+                method: "PATCH",
+                body: body
+            }),
+            invalidatesTags: ["project"]
+        }),
         getProjects: builder.query({
             query: ({ search, page }: { search?: string, page?: number }) => ({
                 url: "/project",
@@ -25,6 +40,14 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
             }),
             providesTags: ["project"]
         }),
+        getSpecificProject: builder.query({
+            query: ({ id }: { id: string }) => ({
+                url: "/project/specific",
+                method: "GET",
+                params: { id }
+            }),
+            providesTags: ["project"]
+        }),
     })
 });
 
@@ -37,7 +60,12 @@ const project = {
     getMyProjects: {
         lazy: ProjectEndpoint.useLazyGetMyProjectsQuery,
         use: ProjectEndpoint.useGetMyProjectsQuery
-    }
+    },
+    getSpecificProject: {
+        lazy: ProjectEndpoint.useLazyGetSpecificProjectQuery,
+        use: ProjectEndpoint.useGetSpecificProjectQuery
+    },
+    UpdateProject: ProjectEndpoint.useUpdateProjectMutation
 }
 
 export default project;

@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import user from "../api/User";
 import { QueryStatus } from "@reduxjs/toolkit/query";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
     const values = useContext(ContextValues);
@@ -126,6 +127,7 @@ const Profile = () => {
 export default Profile;
 
 const ProjectCard = ({ item }: { item: Project }) => {
+
     return (
         <div key={item?.id} className="bg-white/5 rounded-2xl p-3">
             <div className="flex items-center justify-between mb-5">
@@ -136,7 +138,7 @@ const ProjectCard = ({ item }: { item: Project }) => {
                         <p className="font-montserrat text-sm line-clamp-1 opacity-60">{item?.reward}</p>
                     </div>
                 </div>
-                <button className="font-montserrat text-sm font-medium bg-white/10 p-1 px-4 rounded-md cursor-pointer">Edit</button>
+                <Link to={`/edit-project/${item?.id}`} className="font-montserrat text-sm font-medium bg-white/10 p-1 px-4 rounded-md cursor-pointer">Edit</Link>
             </div>
             <p className="font-montserrat bg-white/10 p-3 rounded-md">Reward: {item?.tagline} USDT</p>
         </div>
