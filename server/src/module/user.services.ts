@@ -48,65 +48,48 @@ const getUser = CatchAsync(async (req, res) => {
             });
 
 
-        return {user}
+        return { user }
     })
 
     res.status(200).send(result);
 })
 
-// const claimReferReward = CatchAsync(async (req, res) => {
-//     const result = await prisma.$transaction(async (tx) => {
-//         const user = await tx.user.update({
-//             where: {
-//                 tgId: String(req?.user?.tgId)
-//             },
-//             data: {
-//                 isReferAlartShow: true
-//             }
-//         });
+const updateUsername = CatchAsync(async (req, res) => {
+    const { username } = req?.body;
+    if (!username) {
+        throw new Error("Username is required");
+    }
 
-//         if (!user?.referredByTgId) {
-//             return true;
-//         }
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const user = await transactionClient.user.findFirst({
+            where: {
+                username: username
+            }
+        });
+        if (user) {
+            throw new Error("Username already exsits, use another one.");
+        }
 
-//         const referer = await tx.user.findFirst({
-//             where: {
-//                 tgId: user?.referredByTgId
-//             }
-//         });
+        const updateUsername = await transactionClient.user.update({
+            where: {
+                id: req?.user?.id
+            },
+            data: {
+                username: username
+            }
+        });
 
-//         if (!referer) {
-//             return true;
-//         }
+        return updateUsername;
+    })
 
-//         await tx.user.update({
-//             where: {
-//                 id: referer?.id
-//             },
-//             data: {
-//                 ...(referer?.isModerator ? { usdt: { increment: 0.2 } } : { usdt: { increment: 0.1 } })
-//             }
-//         });
-
-//         const distribution = await tx.referralReward.create({
-//             data: {
-//                 referredUserTgId: req?.user?.tgId,
-//                 referrerTgId: referer?.tgId,
-//                 ...(referer?.isModerator ? { rewardUSDT: 0.2 } : { rewardUSDT: 0.1 }),
-//             }
-//         });
-
-//         return distribution;
-//     })
-
-//     res.status(200).send(result);
-// })
+    res.status(200).send({ status: true, result });
+})
 
 
 const user = {
     create_user,
     getUser,
-    // claimReferReward
+    updateUsername
 }
 
 export default user;

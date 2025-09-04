@@ -1,14 +1,49 @@
 import icon from "../assets/icon.webp";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ContextValues } from "../utils/ContextApi";
 import { FaCopy } from "react-icons/fa";
 import { MdDoNotDisturb } from "react-icons/md";
 import project from "../api/Project";
 import { Project } from "..";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import user from "../api/User";
+import { QueryStatus } from "@reduxjs/toolkit/query";
 
 const Profile = () => {
     const values = useContext(ContextValues);
     const { data, isFetching } = project.getMyProjects.use(undefined);
+    const { setValue, watch, resetField } = useForm();
+    const [updateUsernameMutation, { status: updateStatus, data: updateUsernameData }] = user.updateUsername();
+
+    const handleUpdateUsername = () => {
+        if (!watch("username")) {
+            toast.error("Username is required");
+            return;
+        }
+
+        updateUsernameMutation({ username: watch("username") })
+    }
+
+    useEffect(() => {
+        switch (updateStatus) {
+            case QueryStatus.fulfilled:
+
+                if (updateUsernameData?.code === 400) {
+                    toast.error(updateUsernameData?.msg || "Failed to update username");
+                } else {
+                    toast.success("Username updated successfully");
+                    resetField("username");
+                    (document.getElementById('updateUsername') as HTMLDialogElement).close();
+                }
+
+                break;
+
+            case QueryStatus.rejected:
+                toast.error("Failed to update username");
+                break;
+        }
+    }, [updateStatus, resetField, updateUsernameData?.code, updateUsernameData?.msg])
 
     return (
         <div className="max-w-5xl mx-auto">
@@ -34,7 +69,7 @@ const Profile = () => {
                             </a>
                         </div>
                     </div>
-                    <div className="bg-white/10 px-10 font-monda text-sm cursor-pointer border border-white/10 py-2 rounded-sm">Edit</div>
+                    <button onClick={() => (document.getElementById('updateUsername') as HTMLDialogElement).showModal()} className="bg-white/10 px-10 font-monda text-sm cursor-pointer border border-white/10 py-2 rounded-sm">Edit</button>
                 </div>
 
                 {
@@ -63,6 +98,27 @@ const Profile = () => {
                 }
 
             </div>
+
+            <dialog id="updateUsername" className="modal">
+                <div className="modal-box">
+                    <fieldset className="fieldset w-full">
+                        <legend className="fieldset-legend">Username</legend>
+                        <input
+                            onChange={(e) => setValue("username", e.target.value)}
+                            required
+                            type="text"
+                            className="input w-full"
+                            placeholder="Enter username" />
+                        <button
+                            onClick={handleUpdateUsername}
+                            type="button"
+                            className="px-10 py-2 bg-white/10 font-monda mt-5 w-fit rounded-md mx-auto">Update</button>
+                    </fieldset>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
         </div>
     );
 };

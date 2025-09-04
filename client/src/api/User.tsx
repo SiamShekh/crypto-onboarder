@@ -17,10 +17,11 @@ const UserEndpoint = BaseApi.injectEndpoints({
             }),
             providesTags: ["user"]
         }),
-        verifyChannelJoining: builder.mutation({
-            query: () => ({
-                url: "/telegram/verify",
+        updateUsername: builder.mutation({
+            query: ({username}:{username: string}) => ({
+                url: "/user/username",
                 method: "PATCH",
+                body: {username}
             }),
             invalidatesTags: ["user"]
         }),
@@ -37,7 +38,7 @@ const UserEndpoint = BaseApi.injectEndpoints({
 const user = {
     LoginUser: UserEndpoint.useLoginUserMutation,
     getUser: UserEndpoint.useGetUserQuery,
-    verifyChannelJoining: UserEndpoint.useVerifyChannelJoiningMutation,
+    updateUsername: UserEndpoint.useUpdateUsernameMutation,
     seenReferAlart: UserEndpoint.useSeenReferAlartMutation
 }
 
