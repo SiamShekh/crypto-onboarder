@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import Home from "./page/Home";
 import MainLayout from "./layout/MainLayout";
 import { SolanaProvider } from "./utils/SolanaProvider";
 import ContextApi from "./utils/ContextApi";
@@ -21,7 +20,7 @@ const Routes = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <Home />
+                element: <Explore />
             },
             {
                 path: "add-project",

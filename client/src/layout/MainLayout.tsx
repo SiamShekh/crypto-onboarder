@@ -15,8 +15,8 @@ const MainLayout = () => {
     const nav_item = [
         {
             id: 1,
-            name: "How it works",
-            href: "/help"
+            name: "Explore",
+            href: "/explore"
         },
         {
             id: 2,
@@ -27,11 +27,6 @@ const MainLayout = () => {
             id: 3,
             name: "Add Project",
             href: "/add-project"
-        },
-        {
-            id: 4,
-            name: "Explore",
-            href: "/explore"
         },
     ]
 
