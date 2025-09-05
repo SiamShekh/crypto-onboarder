@@ -145,12 +145,12 @@ const ProjectCard = ({ item }: { item: Project }) => {
                     <img src={item?.image} alt={item?.name} className="size-12 object-contain" />
                     <div>
                         <p className="font-monda text-xl line-clamp-1 capitalize">{item?.name}</p>
-                        <p className="font-montserrat text-sm line-clamp-1 opacity-60">{item?.reward}</p>
+                        <p className="font-montserrat text-sm line-clamp-1 opacity-60">{item?.reward} - <a className="text-xs font-medium text-white" href={`/detail/${item?.id}`}>Details</a></p>
                     </div>
                 </div>
                 <Link to={`/edit-project/${item?.id}`} className="font-montserrat text-sm font-medium bg-white/10 p-1 px-4 rounded-md cursor-pointer">Edit</Link>
             </div>
-            <p className="font-montserrat bg-white/10 p-3 rounded-md">Reward: {item?.tagline} USDT</p>
+            <p className="font-montserrat bg-white/10 p-3 rounded-md">{item?.tagline}</p>
 
             {
                 deleteMutation[1].isLoading ?
