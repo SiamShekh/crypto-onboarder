@@ -7,6 +7,9 @@ import Explore from "./page/Explore";
 import Profile from "./page/Profile";
 import EditProject from "./page/EditProject";
 import ProjectDetails from "./page/ProjectDetails";
+import AdminLayout from "./layout/AdminLayout";
+import Login from "./page/admin/Login";
+import Dashboard from "./page/admin/Dashboard";
 
 const Routes = createBrowserRouter([
     {
@@ -43,6 +46,20 @@ const Routes = createBrowserRouter([
                 element: <ProjectDetails />
             }
         ]
+    },
+    {
+        path: "/admin",
+        element: <AdminLayout />,
+        children: [
+            {
+                index: true,
+                element: <Dashboard />
+            }
+        ]
+    },
+    {
+        path: "/auth",
+        element: <Login />
     }
 ]);
 

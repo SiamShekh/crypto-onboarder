@@ -95,3 +95,12 @@ model ProjectReferrel {
 
   @@unique([projectId, userId, visitorIp])
 }
+
+/// Admin Panel Login model
+model Admins {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique // admin email 
+  password  String // admin password
+  createdAt DateTime @default(now()) // the time when the admin is created
+  updatedAt DateTime @updatedAt
+}
