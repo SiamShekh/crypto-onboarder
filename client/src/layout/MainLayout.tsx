@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import icon from "../assets/icon.webp";
 import { FaWallet } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
@@ -7,6 +7,7 @@ import { WalletName } from "@solana/wallet-adapter-base";
 import { useContext, useEffect } from "react";
 import user from "../api/User";
 import { ContextValues } from "../utils/ContextApi";
+import LoginRequired from "../components/item/LoginRequired";
 
 const MainLayout = () => {
     const values = useContext(ContextValues);
@@ -86,11 +87,10 @@ const MainLayout = () => {
         }
 
         callUser();
-    }, [connected])
+    }, [connected]);
 
-    console.log();
-
-
+    const securePath = ["/add-project", "/profile"];
+    const { pathname } = useLocation();
 
     return (
         <div data-theme="night" className="min-h-screen w-full">
@@ -123,6 +123,7 @@ const MainLayout = () => {
                                 onClick={() => {
                                     disconnect();
                                     window.cookieStore.delete("token");
+                                    values?.user?.setIsLoading(true);
                                     // autoConnect()
                                 }}>
                                 <img
@@ -185,7 +186,11 @@ const MainLayout = () => {
             </div>
 
             <div className="min-h-screen">
-                <Outlet />
+                {
+                    securePath.includes(pathname) && !values?.user?.data?.solAddress ?
+                        <LoginRequired /> :
+                        <Outlet />
+                }
             </div>
 
             <div className="bg-[#7500758e] py-10">

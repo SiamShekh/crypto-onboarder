@@ -10,7 +10,6 @@ const AddProject = () => {
     const { watch, register, reset, resetField, handleSubmit } = useForm();
     const [addProject, { status }] = project.NewProject();
     const [isLoading, setIsLoading] = useState(false);
-
     const [formFields, setFormFields] = useState({
         project_info: [
             {
@@ -116,8 +115,11 @@ const AddProject = () => {
         }
     }, [status, reset])
 
+
+
     return (
         <div>
+            
             {
                 isLoading &&
                 <div className="fixed w-full flex items-center justify-center">
