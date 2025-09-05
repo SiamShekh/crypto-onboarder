@@ -25,6 +25,15 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
             }),
             invalidatesTags: ["project"]
         }),
+        SoftDeleteProject: builder.mutation({
+            query: ({ id }: {
+                id: string
+            }) => ({
+                url: `/project/delete/${id}`,
+                method: "PATCH",
+            }),
+            invalidatesTags: ["project"]
+        }),
         getProjects: builder.query({
             query: ({ search, page }: { search?: string, page?: number }) => ({
                 url: "/project",
@@ -65,7 +74,8 @@ const project = {
         lazy: ProjectEndpoint.useLazyGetSpecificProjectQuery,
         use: ProjectEndpoint.useGetSpecificProjectQuery
     },
-    UpdateProject: ProjectEndpoint.useUpdateProjectMutation
+    UpdateProject: ProjectEndpoint.useUpdateProjectMutation,
+    SoftDeleteProject: ProjectEndpoint.useSoftDeleteProjectMutation
 }
 
 export default project;

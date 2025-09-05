@@ -127,6 +127,16 @@ const Profile = () => {
 export default Profile;
 
 const ProjectCard = ({ item }: { item: Project }) => {
+    const deleteMutation = project.SoftDeleteProject();
+
+    const handleDelete = () => {
+        if (!item?.id) {
+            toast.error("Project id is required");
+            return;
+        }
+
+        deleteMutation[0]({ id: String(item.id) });
+    }
 
     return (
         <div key={item?.id} className="bg-white/5 rounded-2xl p-3">
@@ -141,6 +151,19 @@ const ProjectCard = ({ item }: { item: Project }) => {
                 <Link to={`/edit-project/${item?.id}`} className="font-montserrat text-sm font-medium bg-white/10 p-1 px-4 rounded-md cursor-pointer">Edit</Link>
             </div>
             <p className="font-montserrat bg-white/10 p-3 rounded-md">Reward: {item?.tagline} USDT</p>
+
+            {
+                deleteMutation[1].isLoading ?
+                    <button
+                        className="bg-[#8A0000] text-white font-monda text-sm cursor-pointer border border-red-700 py-2 rounded-sm mt-5 w-full">
+                        <span className="loading loading-spinner loading-md"></span>
+                    </button>
+                    :
+                    <button
+                        onClick={handleDelete}
+                        className="bg-[#8A0000] text-white font-monda text-sm cursor-pointer border border-red-700 py-2 rounded-sm mt-5 w-full">Delete</button>
+            }
+
         </div>
     )
 }

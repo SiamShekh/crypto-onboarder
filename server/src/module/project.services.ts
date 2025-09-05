@@ -36,6 +36,7 @@ const getProjects = CatchAsync(async (req, res) => {
                     mode: "insensitive"
                 }
             }),
+            isDelete: false
         },
         take: 20,
         ...(page && { skip: Number(page) * 20 }),
@@ -54,7 +55,8 @@ const getProjects = CatchAsync(async (req, res) => {
 const getMyProjects = CatchAsync(async (req, res) => {
     const projects = await prisma.project.findMany({
         where: {
-            userId: req?.user?.id
+            userId: req?.user?.id,
+            isDelete: false
         },
         select: {
             id: true,
@@ -115,12 +117,31 @@ const updateProject = CatchAsync(async (req, res) => {
     res.status(200).json(result);
 });
 
+const softDeleteProject = CatchAsync(async(req, res)=>{
+    const { id } = req.params;
+    if (!id) {
+        throw new Error("Project id is required");
+    }
+
+    const softDelete = await  prisma.project.update({
+        where: {
+            id: Number(id)
+        },
+        data:{
+            isDelete: true
+        }
+    });
+
+    res.status(200).json(softDelete);
+})
+
 const project = {
     addProject,
     getProjects,
     getMyProjects,
     getSpacificProject,
-    updateProject
+    updateProject,
+    softDeleteProject
 }
 
 export default project;
