@@ -68,7 +68,7 @@ const Explore = () => {
                                             <button className="font-montserrat text-sm font-medium bg-white/10 p-1 px-4 rounded-md cursor-pointer">Details</button>
                                         </a>
                                     </div>
-                                    <p className="font-montserrat bg-white/10 p-3 rounded-md">Reward: {item?.tagline} USDT</p>
+                                    <p className="font-montserrat bg-white/10 p-3 rounded-md">{item?.tagline}</p>
                                 </div>
                             ))
                 }

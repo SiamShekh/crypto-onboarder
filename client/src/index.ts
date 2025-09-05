@@ -16,6 +16,9 @@ export type User = {
   solAddress: string;
   username?: string;
   connectAt: Date;
+  _count: {
+    ProjectReferrel: number
+  }
   ips: IP[];
   project: Project[];
 };

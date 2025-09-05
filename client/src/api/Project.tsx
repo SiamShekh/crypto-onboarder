@@ -57,6 +57,14 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
             }),
             providesTags: ["project"]
         }),
+        projectTraffic: builder.mutation({
+            query: (body) => ({
+                url: "/project/traffic",
+                method: "POST",
+                body: body
+            }),
+            invalidatesTags: ["project"]
+        }),
     })
 });
 
@@ -75,7 +83,8 @@ const project = {
         use: ProjectEndpoint.useGetSpecificProjectQuery
     },
     UpdateProject: ProjectEndpoint.useUpdateProjectMutation,
-    SoftDeleteProject: ProjectEndpoint.useSoftDeleteProjectMutation
+    SoftDeleteProject: ProjectEndpoint.useSoftDeleteProjectMutation,
+    projectTraffic: ProjectEndpoint.useProjectTrafficMutation
 }
 
 export default project;

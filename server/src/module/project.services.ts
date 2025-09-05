@@ -81,6 +81,26 @@ const getSpacificProject = CatchAsync(async (req, res) => {
         where: {
             id: Number(id)
         },
+        include: {
+            ProjectReferrel: {
+                select: {
+                    user: {
+                        include: {
+                            _count: {
+                                select: {
+                                    ProjectReferrel: {
+                                        where:{
+                                            projectId: Number(id)
+                                        }
+                                    },
+                                },
+                            },
+
+                        },
+                    }
+                }
+            }
+        }
     });
 
     res.status(200).json(project);
@@ -89,7 +109,7 @@ const getSpacificProject = CatchAsync(async (req, res) => {
 const updateProject = CatchAsync(async (req, res) => {
     const { id } = req.params;
     const body = req.body;
-    
+
     if (!id) {
         throw new Error("Project id is required");
     }
@@ -117,23 +137,73 @@ const updateProject = CatchAsync(async (req, res) => {
     res.status(200).json(result);
 });
 
-const softDeleteProject = CatchAsync(async(req, res)=>{
+const softDeleteProject = CatchAsync(async (req, res) => {
     const { id } = req.params;
     if (!id) {
         throw new Error("Project id is required");
     }
 
-    const softDelete = await  prisma.project.update({
+    const softDelete = await prisma.project.update({
         where: {
             id: Number(id)
         },
-        data:{
+        data: {
             isDelete: true
         }
     });
 
     res.status(200).json(softDelete);
-})
+});
+
+const referrelIp = CatchAsync(async (req, res) => {
+    const body = req.body;
+
+    if (!body?.projectId) {
+        throw new Error("Project id is required");
+    }
+
+    if (!body?.address) {
+        throw new Error("Address is required");
+    }
+
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const user = await transactionClient.user.findFirst({
+            where: {
+                solAddress: body?.address
+            }
+        });
+
+        if (!user) {
+            throw new Error("user not found");
+        }
+
+        const project = await transactionClient.project.findUniqueOrThrow({
+            where: {
+                id: body?.projectId
+            }
+        });
+
+        if (!project) {
+            throw new Error("Project not found");
+        }
+
+        const request = await fetch(`https://ipinfo.io/?token=c79e99d0e5c9f5`);
+        const requestJson = await request.json();
+
+        const referrel = await prisma.projectReferrel.create({
+            data: {
+                userId: user?.id,
+                projectId: project?.id,
+                visitorIp: requestJson?.ip,
+            }
+        });
+
+        return referrel;
+    })
+
+
+    res.status(200).json(result);
+});
 
 const project = {
     addProject,
@@ -141,7 +211,8 @@ const project = {
     getMyProjects,
     getSpacificProject,
     updateProject,
-    softDeleteProject
+    softDeleteProject,
+    referrelIp
 }
 
 export default project;

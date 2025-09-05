@@ -22,8 +22,9 @@ model User {
   connectAt DateTime @default(now())
 
   /// All recorded IP addresses for the user
-  ips     IP[]
-  project project[]
+  ips             IP[]
+  project         project[]
+  ProjectReferrel ProjectReferrel[]
 }
 
 /// Stores user IP details and geo-location metadata for auditing or fraud prevention.
@@ -69,15 +70,28 @@ model IP {
 
 /// Represents a project submitted by a user.
 model project {
-  id        Int      @id @default(autoincrement()) // Unique project ID that store on database
-  userId    Int // ID of the user who submitted the project
-  user      User     @relation(fields: [userId], references: [id]) // Relation to the User entity
-  name      String // Name of the project
-  tagline   String // Tagline of the project
-  image     String // URL to the project's image/logo
-  reward    String // how much reward the project offers
-  task      String[] // List of tasks associated with the project
-  isDelete  Boolean  @default(false) // Soft delete flag:: user can delete project from his profile
-  createdAt DateTime @default(now()) // Timestamp when the project was created
-  updatedAt DateTime @updatedAt // Timestamp when the project was last updated
+  id              Int               @id @default(autoincrement()) // Unique project ID that store on database
+  userId          Int // ID of the user who submitted the project
+  user            User              @relation(fields: [userId], references: [id]) // Relation to the User entity
+  name            String // Name of the project
+  tagline         String // Tagline of the project
+  image           String // URL to the project's image/logo
+  reward          String // how much reward the project offers
+  task            String[] // List of tasks associated with the project
+  isDelete        Boolean           @default(false) // Soft delete flag:: user can delete project from his profile
+  createdAt       DateTime          @default(now()) // Timestamp when the project was created
+  updatedAt       DateTime          @updatedAt // Timestamp when the project was last updated
+  ProjectReferrel ProjectReferrel[]
+}
+
+/// Project referrel model 
+model ProjectReferrel {
+  projectId Int // ID of the project being referred
+  project   project  @relation(fields: [projectId], references: [id]) // Relation to the project entity
+  userId    Int // Id of the user who made the referrel
+  user      User     @relation(fields: [userId], references: [id]) // Relation to the user entity
+  visitorIp String // IP address of the visitor who clicked the referrel link
+  createdAt DateTime @default(now()) // Timestamp when the referrel was created
+
+  @@unique([projectId, userId, visitorIp])
 }

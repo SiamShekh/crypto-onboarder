@@ -1,15 +1,27 @@
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import project from "../api/Project";
 import { DETAILS_PAGE } from "../constant";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ContextValues } from "../utils/ContextApi";
 import { toast } from "sonner";
+import { User } from "..";
 
 const ProjectDetails = () => {
     const param = useParams();
     const values = useContext(ContextValues);
     const referralLink = `${DETAILS_PAGE}${param?.id}?startweb=${values?.user?.data?.solAddress}`;
-    const { data, isFetching, status } = project.getSpecificProject.use({ id: param?.id as string });
+    const { data, isFetching } = project.getSpecificProject.use({ id: param?.id as string });
+    const traffic = project.projectTraffic();
+    const solAddress = useSearchParams()[0].get("startweb");
+
+    useEffect(() => {
+        if (solAddress && param?.id) {
+            traffic[0]({
+                projectId: Number(param?.id),
+                address: solAddress,
+            });
+        }
+    }, [])
 
     return (
         <div className="max-w-7xl mx-auto my-10">
@@ -83,8 +95,8 @@ const ProjectDetails = () => {
                                 <p className="font-monda">Referral</p>
                                 {
                                     isFetching ?
-                                    <p className="bg-black/10 w-72 rounded-sm h-6 "/>:
-                                    <p className="text-xs opacity-70">{referralLink}</p>
+                                        <p className="bg-black/10 w-72 rounded-sm h-6 " /> :
+                                        <p className="text-xs opacity-70">{referralLink}</p>
                                 }
                             </div>
                             <button onClick={() => {
@@ -97,8 +109,22 @@ const ProjectDetails = () => {
 
                 <div className="bg-white/5 p-4 relative rounded-xl">
                     <p className="text-2xl font-monda font-semibold text-center">🏆 Leaderboard</p>
+                    {
+                        data?.ProjectReferrel && data?.ProjectReferrel?.length > 0 ?
+                            data?.ProjectReferrel?.map((referrel: { user: User }, i: number) => (
+                                <div key={i} className="flex items-center justify-between my-2 bg-white/5 p-3 rounded-xl">
+                                    <div className="flex items-center gap-3">
+                                        <div>
+                                            <p className="font-monda capitalize">{referrel?.user?.username ? referrel?.user?.username : referrel?.user?.solAddress?.slice(0, 15) + "..."}</p>
+                                            <p className="font-monda text-xs opacity-50 capitalize">{referrel?.user?.solAddress?.slice(0, 15) + "..."}</p>
+                                        </div>
+                                    </div>
+                                    <p className="text-xs font-montserrat">{referrel?.user?._count?.ProjectReferrel} People</p>
+                                </div>
+                            )) :
+                            <p className="font-montserrat absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-xs">No referrals yet</p>
 
-                    <p className="font-montserrat absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-xs">No referrals yet</p>
+                    }
                 </div>
             </div>
         </div>
