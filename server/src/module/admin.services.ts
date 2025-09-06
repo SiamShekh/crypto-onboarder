@@ -53,12 +53,39 @@ const LoginAdmin = CatchAsync(async (req, res) => {
         .json(result);
 });
 
-const getAdmin = CatchAsync(async(req, res)=> {
-    
-})
+const getAdmin = CatchAsync(async (req, res) => {
+    const admin = await prisma.admins.findUniqueOrThrow({
+        where: {
+            id: req?.admin?.id
+        }
+    });
+
+    res.status(200).json(admin);
+});
+
+const stats = CatchAsync(async (req, res) => {
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const wallet = await transactionClient.user.count();
+        const project = await transactionClient.project.count();
+        const visitor = await transactionClient.iP.count();
+
+        const recent10Visitor = await transactionClient.iP.findMany({
+            orderBy: {
+                createdAt: "desc"
+            },
+            take: 10
+        });
+
+        return { wallet, project, visitor, ten: recent10Visitor };
+    })
+
+    res.status(200).json(result);
+});
 
 const admin = {
-    LoginAdmin
+    LoginAdmin,
+    getAdmin,
+    stats
 }
 
 export default admin;

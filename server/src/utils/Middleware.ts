@@ -28,3 +28,28 @@ export const UserVaildation: RequestHandler = CatchAsync(async (req, res, next) 
     })
 })
 
+export const AdminVaildation: RequestHandler = CatchAsync(async (req, res, next) => {
+    const token = req?.cookies.token;
+
+    if (!token) {
+        throw new Error("token not found");
+    }
+
+    jwt.verify(token, process.env.SECRET as string, async (err:any, decode: any) => {
+        if (err) next(err);
+
+        const admin = await prisma.admins.findUniqueOrThrow({
+            where: {
+                id: decode?.id
+            }
+        });
+
+        req.admin = {
+            id: admin?.id,
+            email: admin.email,
+            password: admin.password
+        }
+
+        if (admin) next();
+    })
+});

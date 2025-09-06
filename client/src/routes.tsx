@@ -10,6 +10,7 @@ import ProjectDetails from "./page/ProjectDetails";
 import AdminLayout from "./layout/AdminLayout";
 import Login from "./page/admin/Login";
 import Dashboard from "./page/admin/Dashboard";
+import ContextApiAdmin from "./utils/ContextApiAdmin";
 
 const Routes = createBrowserRouter([
     {
@@ -49,7 +50,9 @@ const Routes = createBrowserRouter([
     },
     {
         path: "/admin",
-        element: <AdminLayout />,
+        element: <ContextApiAdmin>
+            <AdminLayout />
+        </ContextApiAdmin>,
         children: [
             {
                 index: true,

@@ -3,6 +3,11 @@ declare namespace Express {
         user: {
             id: number,
             address: string
+        },
+        admin: {
+            id: number
+            email: string
+            password: string
         }
     }
 }
