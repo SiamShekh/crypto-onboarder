@@ -75,9 +75,7 @@ const MainLayout = () => {
 
     useEffect(() => {
         const callUser = async () => {
-            const token = await cookieStore.get("token");
-
-            if (connected && publicKey?.toBase58() && !token?.value && !values?.user?.isLoading && !values?.user?.data?.solAddress) {
+            if (connected && publicKey?.toBase58() && !values?.user?.isLoading && !values?.user?.data?.solAddress) {
                 userRegister[0]({ address: publicKey?.toBase58() })
             }
         }
@@ -118,7 +116,6 @@ const MainLayout = () => {
                                 className="bg-[#750075] w-40 h-12 cursor-pointer hover:shadow-lg backdrop-blur-3xl shadow-pink-500/20 font-montserrat flex items-center gap-2 rounded-full p-5"
                                 onClick={() => {
                                     disconnect();
-                                    window.cookieStore.delete("token");
                                     values?.user?.setIsLoading(true);
                                 }}>
                                 <img
@@ -207,7 +204,6 @@ const MainLayout = () => {
                                 className="bg-[#750075] w-fit h-10 cursor-pointer hover:shadow-lg backdrop-blur-3xl shadow-pink-500/20 font-montserrat flex items-center gap-1 rounded-md px-2"
                                 onClick={() => {
                                     disconnect();
-                                    window.cookieStore.delete("token");
                                     values?.user?.setIsLoading(true);
                                     // autoConnect()
                                 }}>
