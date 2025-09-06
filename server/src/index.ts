@@ -9,7 +9,7 @@ export const app = express();
 export const prisma = new PrismaClient();
 
 app.use(cors({
-    origin: ["https://localhost:5173"],
+    origin: ["https://localhost:5173","https://api.whybuy.fun"],
     credentials: true
 }));
 
