@@ -1,7 +1,10 @@
 import { MdManageAccounts, MdOutlineSpaceDashboard } from "react-icons/md";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import icon from "../assets/icon.webp";
 import { AiOutlineMenu } from "react-icons/ai";
+import { FaList } from "react-icons/fa";
+import { useContext, useEffect } from "react";
+import { ContextValuesAdmin } from "../utils/ContextApiAdmin";
 
 const AdminLayout = () => {
 
@@ -19,10 +22,10 @@ const AdminLayout = () => {
             href: "/admin/wallet"
         },
         {
-            id: 1,
-            title: "Dashboard",
-            icon: <MdOutlineSpaceDashboard />,
-            href: "/"
+            id: 3,
+            title: "Project",
+            icon: <FaList />,
+            href: "/admin/project"
         },
         {
             id: 1,
@@ -40,6 +43,15 @@ const AdminLayout = () => {
 
     const { pathname } = useLocation();
 
+    const values = useContext(ContextValuesAdmin);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!values?.user?.data?.email && !values?.user?.isLoadingQuery) {
+            navigate("/auth", { replace: true });
+        }
+    }, [navigate, values]);
+
     return (
         <div data-theme="night" className="">
             <div className="drawer lg:drawer-open">
@@ -47,7 +59,7 @@ const AdminLayout = () => {
                 <div className="drawer-content">
                     <div className="flex items-center gap-5 p-3 border-b w-full lg:hidden">
                         <label htmlFor="my-drawer-2">
-                            <AiOutlineMenu className="text-xl"/>
+                            <AiOutlineMenu className="text-xl" />
                         </label>
 
                         <p className="text-xl font-medium font-montserrat">Admin</p>

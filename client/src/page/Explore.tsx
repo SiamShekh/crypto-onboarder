@@ -11,9 +11,6 @@ const Explore = () => {
         page: Number(watch("page") || 0),
     });
 
-    console.log(exploreData?.data?.length);
-
-
     return (
         <div className="max-w-7xl mx-auto">
             <div className="my-10">

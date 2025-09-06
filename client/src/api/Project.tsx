@@ -65,6 +65,24 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
             }),
             invalidatesTags: ["project"]
         }),
+        getAdminProjects: builder.query({
+            query: ({ search, page }: { search?: string, page?: number }) => ({
+                url: "/project/admin",
+                method: "GET",
+                params: { search, page }
+            }),
+            providesTags: ["project"]
+        }),
+        DeleteAdminProject: builder.mutation({
+            query: ({ id }: {
+                id: number
+            }) => ({
+                url: `/project/admin`,
+                method: "PATCH",
+                body: { id }
+            }),
+            invalidatesTags: ["project"]
+        }),
     })
 });
 
@@ -73,6 +91,10 @@ const project = {
     getProjects: {
         lazy: ProjectEndpoint.useLazyGetProjectsQuery,
         use: ProjectEndpoint.useGetProjectsQuery
+    },
+    getAdminProjects: {
+        lazy: ProjectEndpoint.useLazyGetAdminProjectsQuery,
+        use: ProjectEndpoint.useGetAdminProjectsQuery
     },
     getMyProjects: {
         lazy: ProjectEndpoint.useLazyGetMyProjectsQuery,
@@ -84,7 +106,8 @@ const project = {
     },
     UpdateProject: ProjectEndpoint.useUpdateProjectMutation,
     SoftDeleteProject: ProjectEndpoint.useSoftDeleteProjectMutation,
-    projectTraffic: ProjectEndpoint.useProjectTrafficMutation
+    projectTraffic: ProjectEndpoint.useProjectTrafficMutation,
+    DeleteAdminProject: ProjectEndpoint.useDeleteAdminProjectMutation
 }
 
 export default project;

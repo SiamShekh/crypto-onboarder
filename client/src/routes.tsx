@@ -12,6 +12,7 @@ import Login from "./page/admin/Login";
 import Dashboard from "./page/admin/Dashboard";
 import ContextApiAdmin from "./utils/ContextApiAdmin";
 import Wallet from "./page/admin/Wallet";
+import Project from "./page/admin/Project";
 
 const Routes = createBrowserRouter([
     {
@@ -62,7 +63,11 @@ const Routes = createBrowserRouter([
             {
                 path: "wallet",
                 element: <Wallet />
-            }
+            },
+            {
+                path: "project",
+                element: <Project />
+            },
         ]
     },
     {

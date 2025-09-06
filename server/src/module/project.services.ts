@@ -89,7 +89,7 @@ const getSpacificProject = CatchAsync(async (req, res) => {
                             _count: {
                                 select: {
                                     ProjectReferrel: {
-                                        where:{
+                                        where: {
                                             projectId: Number(id)
                                         }
                                     },
@@ -205,6 +205,68 @@ const referrelIp = CatchAsync(async (req, res) => {
     res.status(200).json(result);
 });
 
+const getAdminProjects = CatchAsync(async (req, res) => {
+    const { page, search } = req.query;
+
+    const projects = await prisma.project.findMany({
+        where: {
+            ...(search && {
+                name: {
+                    contains: String(search),
+                    mode: "insensitive"
+                }
+            }),
+            isDelete: false
+        },
+        take: 20,
+        ...(page && { skip: Number(page) * 20 }),
+        select: {
+            id: true,
+            image: true,
+            name: true,
+            tagline: true,
+            reward: true,
+            task: true,
+            _count: {
+                select: {
+                    ProjectReferrel: true
+                }
+            }
+        }
+    })
+
+    res.status(200).json(projects);
+});
+
+const deleteProject = CatchAsync(async (req, res) => {
+    const { id } = req.body;
+
+    if (!id) {
+        throw new Error("Project id is required");
+    }
+
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const project = await transactionClient.project.findUniqueOrThrow({
+            where: {
+                id
+            }
+        });
+
+        const deleted = await transactionClient.project.update({
+            where:{
+                id: project?.id
+            },
+            data: {
+                isDelete: true
+            }
+        });
+
+        return deleted;
+    });
+
+    res.status(200).json(result);
+})
+
 const project = {
     addProject,
     getProjects,
@@ -212,7 +274,9 @@ const project = {
     getSpacificProject,
     updateProject,
     softDeleteProject,
-    referrelIp
+    referrelIp,
+    getAdminProjects,
+    deleteProject
 }
 
 export default project;

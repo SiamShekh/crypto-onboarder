@@ -1,6 +1,6 @@
-import { useContext, useEffect } from "react";
-import { ContextValuesAdmin } from "../../utils/ContextApiAdmin";
-import { useNavigate } from "react-router-dom";
+// import { useContext, useEffect } from "react";
+// import { ContextValuesAdmin } from "../../utils/ContextApiAdmin";
+// import { useNavigate } from "react-router-dom";
 import admin from "../../api/Admin";
 import { GiCrossedChains } from "react-icons/gi";
 import { FaList } from "react-icons/fa";
@@ -8,15 +8,15 @@ import { FaTowerCell } from "react-icons/fa6";
 import { IP } from "../..";
 
 const Dashboard = () => {
-    const values = useContext(ContextValuesAdmin);
-    const navigate = useNavigate();
+    // const values = useContext(ContextValuesAdmin);
+    // const navigate = useNavigate();
     const getAdminStats = admin.getAdminStats(undefined);
 
-    useEffect(() => {
-        if (!values?.user?.data?.email && !values?.user?.isLoadingQuery) {
-            navigate("/auth", { replace: true });
-        }
-    }, [navigate, values]);
+    // useEffect(() => {
+    //     if (!values?.user?.data?.email && !values?.user?.isLoadingQuery) {
+    //         navigate("/auth", { replace: true });
+    //     }
+    // }, [navigate, values]);
 
     return (
         <div className="p-3">
