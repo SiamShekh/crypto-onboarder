@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const project_services_1 = __importDefault(require("../module/project.services"));
+const Middleware_1 = require("../utils/Middleware");
+const ProjectRoute = (0, express_1.Router)();
+ProjectRoute.post("/", Middleware_1.UserVaildation, project_services_1.default.addProject);
+ProjectRoute.get("/", project_services_1.default.getProjects);
+ProjectRoute.get("/me", Middleware_1.UserVaildation, project_services_1.default.getMyProjects);
+ProjectRoute.get("/specific", Middleware_1.UserVaildation, project_services_1.default.getSpacificProject);
+ProjectRoute.patch("/update/:id", Middleware_1.UserVaildation, project_services_1.default.updateProject);
+ProjectRoute.patch("/delete/:id", Middleware_1.UserVaildation, project_services_1.default.softDeleteProject);
+ProjectRoute.post("/traffic", project_services_1.default.referrelIp);
+ProjectRoute.get("/admin", Middleware_1.AdminVaildation, project_services_1.default.getAdminProjects);
+ProjectRoute.patch("/admin", Middleware_1.AdminVaildation, project_services_1.default.deleteProject);
+ProjectRoute.patch("/undo", Middleware_1.AdminVaildation, project_services_1.default.undoProject);
+exports.default = ProjectRoute;
