@@ -27,18 +27,18 @@ const AdminLayout = () => {
             icon: <FaList />,
             href: "/admin/project"
         },
-        {
-            id: 1,
-            title: "Dashboard",
-            icon: <MdOutlineSpaceDashboard />,
-            href: "/"
-        },
-        {
-            id: 1,
-            title: "Dashboard",
-            icon: <MdOutlineSpaceDashboard />,
-            href: "/"
-        },
+        // {
+        //     id: 1,
+        //     title: "Dashboard",
+        //     icon: <MdOutlineSpaceDashboard />,
+        //     href: "/"
+        // },
+        // {
+        //     id: 1,
+        //     title: "Dashboard",
+        //     icon: <MdOutlineSpaceDashboard />,
+        //     href: "/"
+        // },
     ]
 
     const { pathname } = useLocation();

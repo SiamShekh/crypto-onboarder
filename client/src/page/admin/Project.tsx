@@ -39,7 +39,7 @@ const Project = () => {
 
     return (
         <div className="max-w-7xl mx-auto p-3">
-            <div className="flex items-center justify-between my-5">
+            <div className="flex items-center flex-col gap-4 justify-between my-5">
                 <input
                     onChange={(e) => setValue("search", e.target.value)}
                     value={watch("search") || ""}
