@@ -11,6 +11,7 @@ import AdminLayout from "./layout/AdminLayout";
 import Login from "./page/admin/Login";
 import Dashboard from "./page/admin/Dashboard";
 import ContextApiAdmin from "./utils/ContextApiAdmin";
+import Wallet from "./page/admin/Wallet";
 
 const Routes = createBrowserRouter([
     {
@@ -57,6 +58,10 @@ const Routes = createBrowserRouter([
             {
                 index: true,
                 element: <Dashboard />
+            },
+            {
+                path: "wallet",
+                element: <Wallet />
             }
         ]
     },

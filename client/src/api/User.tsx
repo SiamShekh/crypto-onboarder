@@ -18,10 +18,10 @@ const UserEndpoint = BaseApi.injectEndpoints({
             providesTags: ["user"]
         }),
         updateUsername: builder.mutation({
-            query: ({username}:{username: string}) => ({
+            query: ({ username }: { username: string }) => ({
                 url: "/user/username",
                 method: "PATCH",
-                body: {username}
+                body: { username }
             }),
             invalidatesTags: ["user"]
         }),
@@ -32,6 +32,14 @@ const UserEndpoint = BaseApi.injectEndpoints({
             }),
             invalidatesTags: ["user"]
         }),
+        adminUser: builder.query({
+            query: ({ page }: { page: number }) => ({
+                url: "/user/admin",
+                method: "GET",
+                params: { page }
+            }),
+            providesTags: ["user"]
+        })
     })
 });
 
@@ -39,7 +47,8 @@ const user = {
     LoginUser: UserEndpoint.useLoginUserMutation,
     getUser: UserEndpoint.useGetUserQuery,
     updateUsername: UserEndpoint.useUpdateUsernameMutation,
-    seenReferAlart: UserEndpoint.useSeenReferAlartMutation
+    seenReferAlart: UserEndpoint.useSeenReferAlartMutation,
+    adminUser: UserEndpoint.useAdminUserQuery
 }
 
 export default user;

@@ -1,5 +1,5 @@
-import { MdOutlineSpaceDashboard } from "react-icons/md";
-import { Outlet, useLocation } from "react-router-dom";
+import { MdManageAccounts, MdOutlineSpaceDashboard } from "react-icons/md";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import icon from "../assets/icon.webp";
 import { AiOutlineMenu } from "react-icons/ai";
 
@@ -13,10 +13,10 @@ const AdminLayout = () => {
             href: "/admin"
         },
         {
-            id: 1,
-            title: "Dashboard",
-            icon: <MdOutlineSpaceDashboard />,
-            href: "/"
+            id: 2,
+            title: "Wallet",
+            icon: <MdManageAccounts />,
+            href: "/admin/wallet"
         },
         {
             id: 1,
@@ -67,12 +67,12 @@ const AdminLayout = () => {
                         </div>
                         {
                             pages.map((nav) => (
-                                <a href={nav?.href} key={nav?.id} >
+                                <Link to={nav?.href} key={nav?.id} >
                                     <div className={`${pathname === nav?.href && "bg-white/3 my-2"} cursor-pointer hover:bg-black/10 duration-500 rounded-sm p-3 flex items-center gap-3`}>
                                         <p className="text-2xl">{nav?.icon}</p>
                                         <p className="font-montserrat">{nav?.title}</p>
                                     </div>
-                                </a>
+                                </Link>
                             ))
                         }
                     </div>

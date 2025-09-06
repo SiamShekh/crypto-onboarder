@@ -83,13 +83,43 @@ const updateUsername = CatchAsync(async (req, res) => {
     })
 
     res.status(200).send({ status: true, result });
-})
+});
 
+const getUserAdmin = (CatchAsync(async (req, res) => {
+    const { page } = req.query;
+
+    const users = await prisma.user.findMany({
+        take: 10,
+        orderBy: {
+            connectAt: "desc"
+        },
+        skip: Number(page || 0) * 10,
+        select: {
+            username: true,
+            solAddress: true,
+            ips: {
+                take: 1,
+                orderBy: {
+                    createdAt: "desc"
+                },
+                select: {
+                    ip: true,
+                    city: true,
+                    timezone: true,
+                    country: true
+                }
+            }
+        }
+    });
+
+    res.status(200).json(users);
+}));
 
 const user = {
     create_user,
     getUser,
-    updateUsername
+    updateUsername,
+    getUserAdmin
 }
 
 export default user;
