@@ -13,5 +13,6 @@ ProjectRoute.patch("/delete/:id", UserVaildation, project.softDeleteProject);
 ProjectRoute.post("/traffic", project.referrelIp);
 ProjectRoute.get("/admin", AdminVaildation, project.getAdminProjects);
 ProjectRoute.patch("/admin", AdminVaildation, project.deleteProject);
+ProjectRoute.patch("/undo", AdminVaildation, project.undoProject);
 
 export default ProjectRoute;

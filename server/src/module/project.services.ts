@@ -206,7 +206,7 @@ const referrelIp = CatchAsync(async (req, res) => {
 });
 
 const getAdminProjects = CatchAsync(async (req, res) => {
-    const { page, search } = req.query;
+    const { page, search, status } = req.query;
 
     const projects = await prisma.project.findMany({
         where: {
@@ -216,7 +216,9 @@ const getAdminProjects = CatchAsync(async (req, res) => {
                     mode: "insensitive"
                 }
             }),
-            isDelete: false
+            ...(status === "deleted" ? {
+                isDelete: true
+            } : { isDelete: false })
         },
         take: 20,
         ...(page && { skip: Number(page) * 20 }),
@@ -253,7 +255,7 @@ const deleteProject = CatchAsync(async (req, res) => {
         });
 
         const deleted = await transactionClient.project.update({
-            where:{
+            where: {
                 id: project?.id
             },
             data: {
@@ -265,7 +267,36 @@ const deleteProject = CatchAsync(async (req, res) => {
     });
 
     res.status(200).json(result);
-})
+});
+
+const undoProject = CatchAsync(async (req, res) => {
+    const { id } = req.body;
+
+    if (!id) {
+        throw new Error("Project id is required");
+    }
+
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const project = await transactionClient.project.findUniqueOrThrow({
+            where: {
+                id
+            }
+        });
+
+        const deleted = await transactionClient.project.update({
+            where: {
+                id: project?.id
+            },
+            data: {
+                isDelete: false
+            }
+        });
+
+        return deleted;
+    });
+
+    res.status(200).json(result);
+});
 
 const project = {
     addProject,
@@ -276,7 +307,8 @@ const project = {
     softDeleteProject,
     referrelIp,
     getAdminProjects,
-    deleteProject
+    deleteProject,
+    undoProject
 }
 
 export default project;

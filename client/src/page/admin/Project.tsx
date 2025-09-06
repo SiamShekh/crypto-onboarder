@@ -19,10 +19,12 @@ interface ProjectType {
 const Project = () => {
     const { setValue, watch } = useForm();
     const deleteAdminProject = project.DeleteAdminProject();
+    const UndoAdminProject = project.UndoAdminProject();
 
     const exploreData = project.getAdminProjects.use({
         search: watch("search") || "",
         page: Number(watch("page") || 0),
+        status: watch("status", "active")
     });
 
     useEffect(() => {
@@ -35,11 +37,31 @@ const Project = () => {
                 toast.error("Something went wrong");
                 break;
         }
-    }, [deleteAdminProject[1]?.status])
+    }, [deleteAdminProject[1]?.status]);
+
+    useEffect(() => {
+        switch (UndoAdminProject[1]?.status) {
+            case QueryStatus.fulfilled:
+                toast.success("Project Undo Successfully");
+                break;
+
+            case QueryStatus.rejected:
+                toast.error("Something went wrong");
+                break;
+        }
+    }, [UndoAdminProject[1]?.status]);
 
     return (
         <div className="max-w-7xl mx-auto p-3">
-            <div className="flex items-center flex-col gap-4 justify-between my-5">
+            <div className="mx-auto text-sm justify-center border border-white/10 rounded-full overflow-hidden bg-white/5 font-monda w-72 flex items-center">
+                <button
+                    onClick={() => setValue("status", "active")}
+                    className={`text-center ${watch("status", "active") === "active" && "bg-white text-black"} w-full p-2 cursor-pointer`}>Active</button>
+                <button
+                    onClick={() => setValue("status", "deleted")}
+                    className={`text-center ${watch("status", "active") === "deleted" && "bg-white text-black"} w-full p-2 hover:bg-black/10 cursor-pointer`}>Deleted</button>
+            </div>
+            <div className="flex items-center md:flex-row flex-col gap-4 justify-between my-5">
                 <input
                     onChange={(e) => setValue("search", e.target.value)}
                     value={watch("search") || ""}
@@ -92,17 +114,25 @@ const Project = () => {
                                         <td>{project?._count?.ProjectReferrel}</td>
                                         <td>
                                             {
-                                                deleteAdminProject[1]?.isLoading ?
+                                                deleteAdminProject[1]?.isLoading ||  UndoAdminProject[1]?.isLoading ?
                                                     <div className="px-5 bg-white/5 w-fit p-1 rounded-md mx-auto ">
                                                         <span className="loading loading-spinner loading-xs"></span>
                                                     </div> :
-                                                    <div
-                                                        onClick={() => {
-                                                            if (!deleteAdminProject[1]?.isLoading) {
-                                                                deleteAdminProject[0]({ id: project?.id })
-                                                            }
-                                                        }}
-                                                        className="font-monda cursor-pointer text-xs bg-white/5 w-fit p-1 rounded-md mx-auto">Delete</div>
+                                                    watch("status", "active") === "active" ?
+                                                        <div
+                                                            onClick={() => {
+                                                                if (!deleteAdminProject[1]?.isLoading) {
+                                                                    deleteAdminProject[0]({ id: project?.id })
+                                                                }
+                                                            }}
+                                                            className="font-monda cursor-pointer text-xs bg-white/5 w-fit p-1 rounded-md mx-auto">Delete</div> :
+                                                        <div
+                                                            onClick={() => {
+                                                                if (!UndoAdminProject[1]?.isLoading) {
+                                                                    UndoAdminProject[0]({ id: project?.id })
+                                                                }
+                                                            }}
+                                                            className="font-monda cursor-pointer text-xs bg-white/5 w-fit p-1 rounded-md mx-auto">Undo</div>
                                             }
                                         </td>
                                     </tr>

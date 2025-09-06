@@ -66,10 +66,10 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
             invalidatesTags: ["project"]
         }),
         getAdminProjects: builder.query({
-            query: ({ search, page }: { search?: string, page?: number }) => ({
+            query: ({ search, page, status }: { search?: string, page?: number, status?: string }) => ({
                 url: "/project/admin",
                 method: "GET",
-                params: { search, page }
+                params: { search, page, status }
             }),
             providesTags: ["project"]
         }),
@@ -78,6 +78,16 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
                 id: number
             }) => ({
                 url: `/project/admin`,
+                method: "PATCH",
+                body: { id }
+            }),
+            invalidatesTags: ["project"]
+        }),
+        UndoAdminProject: builder.mutation({
+            query: ({ id }: {
+                id: number
+            }) => ({
+                url: `/project/undo`,
                 method: "PATCH",
                 body: { id }
             }),
@@ -107,7 +117,8 @@ const project = {
     UpdateProject: ProjectEndpoint.useUpdateProjectMutation,
     SoftDeleteProject: ProjectEndpoint.useSoftDeleteProjectMutation,
     projectTraffic: ProjectEndpoint.useProjectTrafficMutation,
-    DeleteAdminProject: ProjectEndpoint.useDeleteAdminProjectMutation
+    DeleteAdminProject: ProjectEndpoint.useDeleteAdminProjectMutation,
+    UndoAdminProject: ProjectEndpoint.useUndoAdminProjectMutation
 }
 
 export default project;

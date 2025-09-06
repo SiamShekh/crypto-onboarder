@@ -34,7 +34,7 @@ const AddProject = () => {
                 field_type: "file",
                 key: "logo_image",
                 default_value: "",
-                col_span: 1
+                col_span: 2
             },
             {
                 label: "Reward",
@@ -118,7 +118,7 @@ const AddProject = () => {
 
 
     return (
-        <div>
+        <div className="p-3">
             
             {
                 isLoading &&
@@ -150,7 +150,7 @@ const AddProject = () => {
 
                     <div
                         onClick={() => (document.getElementById('add_field') as HTMLFormElement).showModal()}
-                        className={`bg-white/5 flex gap-2 justify-center items-center p-3 rounded-md h-full cursor-pointer`}>
+                        className={`bg-white/5 flex gap-2 justify-center items-center col-span-full p-3 rounded-md h-full cursor-pointer`}>
                         <FaPlus />
                         <p>Add Custom Task</p>
                     </div>

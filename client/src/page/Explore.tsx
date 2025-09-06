@@ -12,13 +12,13 @@ const Explore = () => {
     });
 
     return (
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto p-3">
             <div className="my-10">
                 <p className="font-monda text-4xl text-center">REAL USER FOR YOUR CRYPTO PROJECT</p>
                 <p className="font-montserrat text-center opacity-60">earn rewards from upcoming meme projects</p>
             </div>
 
-            <div className="flex items-center justify-between my-5">
+            <div className="flex items-center justify-between my-5 flex-col md:flex-row gap-3">
                 <input
                     onChange={(e) => setValue("search", e.target.value)}
                     value={watch("search") || ""}
@@ -52,7 +52,7 @@ const Explore = () => {
                             </div>
                         ) :
                             exploreData?.data?.map((item: Project) => (
-                                <div key={item?.id} className="bg-white/5 rounded-2xl p-3">
+                                <div key={item?.id} className="bg-white/5 rounded-lg lg:rounded-2xl p-3">
                                     <div className="flex items-center justify-between mb-5">
                                         <div className="flex items-center gap-3">
                                             <img src={item?.image} alt={item?.name} className="size-12 object-contain" />
