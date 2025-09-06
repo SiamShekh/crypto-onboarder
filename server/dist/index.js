@@ -22,7 +22,8 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 exports.app = (0, express_1.default)();
 exports.prisma = new prisma_1.PrismaClient();
 exports.app.use((0, cors_1.default)({
-    origin: ["https://localhost:5173", "https://api.whybuy.fun"],
+    origin: "*",
+    // origin: ["https://localhost:5173","https://api.whybuy.fun"],
     credentials: true
 }));
 exports.app.use(express_1.default.json());
