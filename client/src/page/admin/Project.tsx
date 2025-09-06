@@ -71,31 +71,42 @@ const Project = () => {
                     </thead>
                     <tbody>
                         {
-                            exploreData?.data?.map((project: ProjectType, key: number) => (
-                                <tr key={key} className="text-center font-opensans">
-                                    <th>{key + 1}</th>
-                                    <td>{project?.name}</td>
-                                    <td>{project?.tagline}</td>
-                                    <td>{project?.reward}</td>
-                                    <td>{project?.task?.length}</td>
-                                    <td>{project?._count?.ProjectReferrel}</td>
-                                    <td>
-                                        {
-                                            deleteAdminProject[1]?.isLoading ?
-                                                <div className="px-5 bg-white/5 w-fit p-1 rounded-md mx-auto ">
-                                                    <span className="loading loading-spinner loading-xs"></span>
-                                                </div> :
-                                                <div
-                                                    onClick={() => {
-                                                        if (!deleteAdminProject[1]?.isLoading) {
-                                                            deleteAdminProject[0]({ id: project?.id })
-                                                        }
-                                                    }}
-                                                    className="font-monda cursor-pointer text-xs bg-white/5 w-fit p-1 rounded-md mx-auto">Delete</div>
-                                        }
+                            exploreData?.data?.length === 0 || exploreData?.data?.length === undefined ?
+                                <tr>
+                                    <td colSpan={7}>
+                                        <div>
+                                            <p className="text-center">No user found</p>
+                                        </div>
                                     </td>
                                 </tr>
-                            ))
+
+                                :
+
+                                exploreData?.data?.map((project: ProjectType, key: number) => (
+                                    <tr key={key} className="text-center font-opensans">
+                                        <th>{key + 1}</th>
+                                        <td>{project?.name}</td>
+                                        <td>{project?.tagline}</td>
+                                        <td>{project?.reward}</td>
+                                        <td>{project?.task?.length}</td>
+                                        <td>{project?._count?.ProjectReferrel}</td>
+                                        <td>
+                                            {
+                                                deleteAdminProject[1]?.isLoading ?
+                                                    <div className="px-5 bg-white/5 w-fit p-1 rounded-md mx-auto ">
+                                                        <span className="loading loading-spinner loading-xs"></span>
+                                                    </div> :
+                                                    <div
+                                                        onClick={() => {
+                                                            if (!deleteAdminProject[1]?.isLoading) {
+                                                                deleteAdminProject[0]({ id: project?.id })
+                                                            }
+                                                        }}
+                                                        className="font-monda cursor-pointer text-xs bg-white/5 w-fit p-1 rounded-md mx-auto">Delete</div>
+                                            }
+                                        </td>
+                                    </tr>
+                                ))
                         }
 
 

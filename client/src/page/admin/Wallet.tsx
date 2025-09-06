@@ -22,11 +22,14 @@ const Wallet = () => {
                     <tbody>
                         {
                             adminWallet?.data?.length === 0 || adminWallet?.data?.length === undefined ?
-                                <td colSpan={6}>
-                                    <div>
-                                        <p className="text-center">No user found</p>
-                                    </div>
-                                </td> :
+                                <tr>
+                                    <td colSpan={6}>
+                                        <div>
+                                            <p className="text-center">No user found</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                :
                                 adminWallet?.data?.map((user: { username: string, solAddress: string, ips: { ip: string, city: string, timezone: string, country: string }[] }, id: number) => (
                                     <tr key={id}>
                                         <th>{id + 1}</th>

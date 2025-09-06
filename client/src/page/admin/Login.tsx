@@ -38,7 +38,7 @@ const Login = () => {
     }, [status, navigate])
 
     return (
-        <div data-theme="night" className="flex items-center justify-center min-h-screen w-full">
+        <div data-theme="night" className="flex items-center justify-center min-h-screen w-full p-3">
             <div data-theme="light" className="p-4 font-monda bg-white w-md rounded-2xl">
                 <p className="text-center font-semibold">Login</p>
 

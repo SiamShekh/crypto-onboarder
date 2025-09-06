@@ -26,7 +26,7 @@ const Dashboard = () => {
                     <span className="loading loading-spinner loading-xl"></span>
                 </div>
             }
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid lg:grid-cols-3 gap-3">
                 <div className="bg-white/5 p-4 rounded-lg">
                     <div className="flex items-center gap-3">
                         <GiCrossedChains className="text-2xl" />
@@ -65,16 +65,25 @@ const Dashboard = () => {
                         </thead>
                         <tbody>
                             {
-                                getAdminStats?.data?.ten?.map((ip: IP, id: number) => (
+                                getAdminStats?.data?.ten?.length === 0 || getAdminStats?.data?.ten?.length === undefined ?
                                     <tr>
-                                        <th>{id + 1}</th>
-                                        <td>{ip?.ip}</td>
-                                        <td>{ip?.city}</td>
-                                        <td>{ip?.region}</td>
-                                        <td>{ip?.country}</td>
-                                        <td>{ip?.timezone}</td>
+                                        <td colSpan={6}>
+                                            <div>
+                                                <p className="text-center">No user found</p>
+                                            </div>
+                                        </td>
                                     </tr>
-                                ))
+                                    :
+                                    getAdminStats?.data?.ten?.map((ip: IP, id: number) => (
+                                        <tr key={id}>
+                                            <th>{id + 1}</th>
+                                            <td>{ip?.ip}</td>
+                                            <td>{ip?.city}</td>
+                                            <td>{ip?.region}</td>
+                                            <td>{ip?.country}</td>
+                                            <td>{ip?.timezone}</td>
+                                        </tr>
+                                    ))
                             }
 
                         </tbody>

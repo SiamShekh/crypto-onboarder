@@ -47,7 +47,7 @@ const AdminLayout = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!values?.user?.data?.email && !values?.user?.isLoadingQuery) {
+        if ((!values?.user?.data?.email && !values?.user?.isLoadingQuery) || (values?.user?.data?.email === undefined && !values?.user?.isLoadingQuery)) {
             navigate("/auth", { replace: true });
         }
     }, [navigate, values]);
@@ -72,7 +72,7 @@ const AdminLayout = () => {
                 </div>
                 <div className="drawer-side">
                     <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-                    <div className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+                    <div className="menu bg-base-200 text-base-content min-h-full w-64 p-4">
                         <div className="flex items-center justify-center gap-4 mb-20 mt-10">
                             <img src={icon} alt="icon" className="size-16" />
                             <p className="text-4xl font-monda font-semibold">Admin</p>
