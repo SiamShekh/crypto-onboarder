@@ -8,7 +8,14 @@ const IpCollect = async (userTg: number, info: string) => {
         data: {
             info,
             userId: userTg,
-            ...requestJson,
+            ip: requestJson?.ip,
+            city: requestJson?.city,
+            country: requestJson?.country,
+            loc: requestJson?.loc,
+            org: requestJson?.org,
+            postal: requestJson?.postal,
+            timezone: requestJson?.timezone,
+            region: requestJson?.region,
         }
     });
 }
