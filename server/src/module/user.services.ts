@@ -12,7 +12,7 @@ const create_user = CatchAsync(async (req, res) => {
     const tx = await prisma.$transaction(async (tx) => {
         const user = await tx.user.findFirst({
             where: {
-                solAddress: address
+                solAddress: address 
             }
         });
 
