@@ -23,7 +23,7 @@ exports.app = (0, express_1.default)();
 exports.prisma = new prisma_1.PrismaClient();
 exports.app.use((0, cors_1.default)({
     // origin: "*",
-    origin: ["https://localhost:5173", "https://whybuy.fun", "http://whybuy.fun"],
+    origin: ["https://localhost:5173", "https://whybuy.fun", "http://whybuy.fun", "https://demo.whybuy.fun", "http://demo.whybuy.fun"],
     credentials: true
 }));
 exports.app.use(express_1.default.json());
