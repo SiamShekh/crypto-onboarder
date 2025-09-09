@@ -68,7 +68,7 @@ const Explore = () => {
                                                 }
                                             </div>
                                         </div>
-                                        <a href={`/detail/${item?.id}`}>
+                                        <a href={`/detail/${item?.slug}`}>
                                             <button className="font-montserrat text-sm font-medium bg-white/10 p-1 px-4 rounded-md cursor-pointer">Details</button>
                                         </a>
                                     </div>

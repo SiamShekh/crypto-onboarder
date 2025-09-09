@@ -71,15 +71,15 @@ const getMyProjects = CatchAsync(async (req, res) => {
 });
 
 const getSpacificProject = CatchAsync(async (req, res) => {
-    const { id } = req.query;
+    const { slug } = req.query;
 
-    if (!id) {
+    if (!slug) {
         throw new Error("Project id is required");
     }
 
     const project = await prisma.project.findUniqueOrThrow({
         where: {
-            id: Number(id)
+            slug: slug as string
         },
         include: {
             ProjectReferrel: {
@@ -90,15 +90,15 @@ const getSpacificProject = CatchAsync(async (req, res) => {
                                 select: {
                                     ProjectReferrel: {
                                         where: {
-                                            projectId: Number(id)
+                                            slug: slug as string
                                         }
                                     },
                                 },
                             },
-
                         },
                     }
-                }
+                },
+                take: 5
             }
         }
     });
@@ -158,8 +158,8 @@ const softDeleteProject = CatchAsync(async (req, res) => {
 const referrelIp = CatchAsync(async (req, res) => {
     const body = req.body;
 
-    if (!body?.projectId) {
-        throw new Error("Project id is required");
+    if (!body?.slug) {
+        throw new Error("Slug is required");
     }
 
     if (!body?.address) {
@@ -179,7 +179,7 @@ const referrelIp = CatchAsync(async (req, res) => {
 
         const project = await transactionClient.project.findUniqueOrThrow({
             where: {
-                id: body?.projectId
+                slug: body?.slug
             }
         });
 
@@ -193,7 +193,7 @@ const referrelIp = CatchAsync(async (req, res) => {
         const referrel = await prisma.projectReferrel.create({
             data: {
                 userId: user?.id,
-                projectId: project?.id,
+                slug: project?.slug,
                 visitorIp: requestJson?.ip,
             }
         });
@@ -298,6 +298,18 @@ const undoProject = CatchAsync(async (req, res) => {
     res.status(200).json(result);
 });
 
+const getProjectById = CatchAsync(async (req, res) => {
+    const id = req.query;
+
+    const project = await prisma.project.findFirst({
+        where: {
+            id: id
+        }
+    });
+
+    res.status(200).json(project);
+})
+
 const project = {
     addProject,
     getProjects,
@@ -308,7 +320,8 @@ const project = {
     referrelIp,
     getAdminProjects,
     deleteProject,
-    undoProject
+    undoProject,
+    getProjectById
 }
 
 export default project;

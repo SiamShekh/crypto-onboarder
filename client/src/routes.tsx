@@ -45,7 +45,7 @@ const Routes = createBrowserRouter([
                 element: <EditProject />
             },
             {
-                path: "/detail/:id",
+                path: "/detail/:slug",
                 element: <ProjectDetails />
             }
         ]

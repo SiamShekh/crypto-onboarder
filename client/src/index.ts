@@ -6,6 +6,7 @@ export interface Project {
   launchDate: Date
   image: string
   reward: string
+  slug: string
   isDelete: boolean
   createdAt: string
   updatedAt: string

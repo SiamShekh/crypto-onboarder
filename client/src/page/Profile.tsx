@@ -148,7 +148,7 @@ const ProjectCard = ({ item }: { item: Project }) => {
                         <p className="font-montserrat text-xs line-clamp-1 opacity-60">{new Date(item?.launchDate).toLocaleDateString()} - <a className="text-xs font-medium text-white" href={`/detail/${item?.id}`}>Details</a></p>
                     </div>
                 </div>
-                <Link to={`/edit-project/${item?.id}`} className="font-montserrat text-sm font-medium bg-white/10 p-1 px-4 rounded-md cursor-pointer">Edit</Link>
+                <Link to={`/edit-project/${item?.slug}`} className="font-montserrat text-sm font-medium bg-white/10 p-1 px-4 rounded-md cursor-pointer">Edit</Link>
             </div>
             <div className="p-3 bg-white/5 rounded-md">
                 <p className="font-montserrat text-xs line-clamp-3 relative overflow-hidden">{item?.description}</p>

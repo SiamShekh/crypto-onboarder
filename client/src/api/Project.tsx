@@ -50,10 +50,10 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
             providesTags: ["project"]
         }),
         getSpecificProject: builder.query({
-            query: ({ id }: { id: string }) => ({
+            query: ({ slug }: { slug: string }) => ({
                 url: "/project/specific",
                 method: "GET",
-                params: { id }
+                params: { slug }
             }),
             providesTags: ["project"]
         }),

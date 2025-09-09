@@ -112,14 +112,14 @@ enum taskCategory {
 
 /// Project referrel model 
 model ProjectReferrel {
-  projectId Int // ID of the project being referred
-  project   project  @relation(fields: [projectId], references: [id]) // Relation to the project entity
+  slug      String // project slug
+  project   project  @relation(fields: [slug], references: [slug]) // Relation to the project entity
   userId    Int // Id of the user who made the referrel
   user      User     @relation(fields: [userId], references: [id]) // Relation to the user entity
   visitorIp String // IP address of the visitor who clicked the referrel link
   createdAt DateTime @default(now()) // Timestamp when the referrel was created
 
-  @@unique([projectId, userId, visitorIp])
+  @@unique([slug, userId, visitorIp])
 }
 
 /// Admin Panel Login model

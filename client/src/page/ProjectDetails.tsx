@@ -9,17 +9,21 @@ import { User } from "..";
 const ProjectDetails = () => {
     const param = useParams();
     const values = useContext(ContextValues);
-    const referralLink = `${DETAILS_PAGE}${param?.id}?startweb=${values?.user?.data?.solAddress}`;
-    const { data, isFetching } = project.getSpecificProject.use({ id: param?.id as string });
+    const referralLink = `${DETAILS_PAGE}${param?.slug}?startweb=${values?.user?.data?.solAddress}`;
+    const { data, isFetching } = project.getSpecificProject.use({ slug: param?.slug as string });
     const traffic = project.projectTraffic();
     const solAddress = useSearchParams()[0].get("startweb");
 
     useEffect(() => {
-        if (solAddress && param?.id) {
+        if (solAddress && param?.slug) {
+            console.log(`Sol address: ${solAddress}\n\n slug: ${param?.slug}`);
+            
             traffic[0]({
-                projectId: Number(param?.id),
+                slug: param?.slug as string,
                 address: solAddress,
             });
+        }else{
+            console.log('not macth')
         }
     }, [])
 
@@ -46,7 +50,12 @@ const ProjectDetails = () => {
                                     <img src={data?.image} alt={data?.name} className="size-14 bg-black rounded-xl p-2" />
                                     <div>
                                         <p className="font-monda text-xl">{data?.name}</p>
-                                        <p className="text-xs font-montserrat text-white/50 line-clamp-1">{data?.tagline}</p>
+                                        {
+                                            data?.launchDate ?
+                                                <p className="text-xs font-montserrat text-white/50 line-clamp-1">Launch Date: {new Date(data?.launchDate).toLocaleString()}</p> :
+                                                data?.reward &&
+                                                <p className="text-xs font-montserrat text-white/50 line-clamp-1">Launch Date: {new Date(data?.launchDate).toLocaleString()}</p>
+                                        }
                                     </div>
                                 </div>
 
@@ -104,6 +113,10 @@ const ProjectDetails = () => {
                                 toast.success("Copied to clipboard");
                             }} className="font-montserrat text-sm bg-white/10 px-5 py-1 rounded-md border border-white/10">Copy</button>
                         </div>
+
+                        <div className="p-3 bg-white/5 w-full col-span-full rounded-md">
+                            {data?.description}
+                        </div>
                     </div>
                 </div>
 
@@ -123,7 +136,6 @@ const ProjectDetails = () => {
                                 </div>
                             )) :
                             <p className="font-montserrat absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-xs">No referrals yet</p>
-
                     }
                 </div>
             </div>
