@@ -64,6 +64,8 @@ const AddProject = () => {
         }
     }, [status, method.reset])
 
+    console.log(method.watch("checkbox"));
+    
 
     return (
         <div className="p-3">
@@ -141,15 +143,24 @@ const AddProject = () => {
                                 <p className="text-xs text-red-500 line-clamp-1 mt-1">{method.formState.errors["description"]?.message as string}</p>
                             )}
                         </div>
+
+                        <div className="flex items-center gap-2 col-span-full">
+                            <input type="checkbox" {...method.register("checkbox")} required className="checkbox" />
+                            <p>I have read and agreed to the terms of use</p>
+                        </div>
                     </div>
+
 
                     <div className="flex items-center justify-center">
                         {
                             isLoading ?
-                                <button type="button" className="bg-white/5 px-10 py-2 cursor-pointer font-medium rounded-2xl mx-auto my-5">
+                                <button type="button" className="bg-white text-black w-96 py-2 cursor-pointer font-medium rounded-full mx-auto my-5">
                                     <span className="loading loading-spinner loading-md"></span>
                                 </button> :
-                                <button type="submit" className="bg-white/5 px-10 py-2 cursor-pointer font-medium rounded-2xl mx-auto my-5">Submit</button>
+                                <button
+                                    disabled={!method.watch("checkbox")}
+                                    type="submit"
+                                    className="disabled:bg-white/30 bg-white text-black w-96 py-2 cursor-pointer font-medium rounded-full mx-auto my-5">Submit</button>
                         }
                     </div>
 
