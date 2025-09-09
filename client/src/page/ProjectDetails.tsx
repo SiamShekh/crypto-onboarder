@@ -4,7 +4,7 @@ import { DETAILS_PAGE } from "../constant";
 import { useContext, useEffect } from "react";
 import { ContextValues } from "../utils/ContextApi";
 import { toast } from "sonner";
-import { User } from "..";
+import { Task, User } from "..";
 
 const ProjectDetails = () => {
     const param = useParams();
@@ -16,16 +16,12 @@ const ProjectDetails = () => {
 
     useEffect(() => {
         if (solAddress && param?.slug) {
-            console.log(`Sol address: ${solAddress}\n\n slug: ${param?.slug}`);
-            
             traffic[0]({
                 slug: param?.slug as string,
                 address: solAddress,
             });
-        }else{
-            console.log('not macth')
         }
-    }, [])
+    }, [param?.slug, solAddress, traffic])
 
     return (
         <div className="max-w-7xl mx-auto my-10">
@@ -64,6 +60,10 @@ const ProjectDetails = () => {
                     }
 
                     <div className="grid grid-cols-2 gap-3 mt-5">
+                        <div className="p-3 border-white/10 border w-full col-span-full rounded-md">
+                            {data?.description}
+                        </div>
+
                         {
                             isFetching ?
                                 <>
@@ -89,10 +89,16 @@ const ProjectDetails = () => {
                                         <div className="bg-black/10 skeleton w-20 h-6 rounded-sm" />
                                     </div>
                                 </> :
-                                data?.task?.map((task: string, i: number) => (
+                                data?.task?.map((task: Task, i: number) => (
                                     <div key={i} className="border border-white/10 p-3 rounded-md flex items-center justify-between">
-                                        <p className="font-montserrat cursor-pointer">{new URL(task).host}</p>
-                                        <a href={task} target="_blank" >
+                                        <div className="flex items-center gap-3">
+                                            <img
+                                                className="size-8 bg-white/5 rounded-xl border border-white/5"
+                                                src={task?.taskImg}
+                                                alt={task?.taskLabel} />
+                                            <p className="font-montserrat font-medium">{task?.taskLabel}</p>
+                                        </div>
+                                        <a href={task?.taskHref} target="_blank" >
                                             <button className="text-xs cursor-pointer font-monda bg-white/10 px-3 py-1 rounded-full">Check</button>
                                         </a>
                                     </div>
@@ -111,12 +117,10 @@ const ProjectDetails = () => {
                             <button onClick={() => {
                                 navigator.clipboard.writeText(referralLink);
                                 toast.success("Copied to clipboard");
-                            }} className="font-montserrat text-sm bg-white/10 px-5 py-1 rounded-md border border-white/10">Copy</button>
+                            }} className="font-montserrat text-sm cursor-pointer bg-white/10 px-5 py-1 rounded-md border border-white/10">Copy</button>
                         </div>
 
-                        <div className="p-3 bg-white/5 w-full col-span-full rounded-md">
-                            {data?.description}
-                        </div>
+
                     </div>
                 </div>
 

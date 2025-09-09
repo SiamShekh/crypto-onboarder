@@ -99,7 +99,8 @@ const getSpacificProject = CatchAsync(async (req, res) => {
                     }
                 },
                 take: 5
-            }
+            },
+            task: true
         }
     });
 
