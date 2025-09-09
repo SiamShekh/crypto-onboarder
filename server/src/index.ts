@@ -4,13 +4,14 @@ import cors from "cors";
 import Utility from "./utils/Utilite";
 import MainRoute from "./routes/main.route";
 import cookie from "cookie-parser";
+import * as cheerio from 'cheerio';
 
 export const app = express();
 export const prisma = new PrismaClient();
 
 app.use(cors({
     // origin: "*",
-    origin: ["https://localhost:5173","https://whybuy.fun","http://whybuy.fun","https://demo.whybuy.fun","http://demo.whybuy.fun"],
+    origin: ["https://localhost:5173", "https://whybuy.fun", "http://whybuy.fun", "https://demo.whybuy.fun", "http://demo.whybuy.fun"],
     credentials: true
 }));
 
@@ -21,7 +22,7 @@ app.get("/", Utility.CatchAsync(async (req, res) => {
     res.send({
         code: 200,
         msg: "Server is runing",
-        data:[]
+        data: []
     })
 }))
 

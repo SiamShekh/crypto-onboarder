@@ -1,106 +1,63 @@
 import { FaPlus } from "react-icons/fa";
-import { FieldValues, useForm } from "react-hook-form";
+import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { useEffect, useState } from "react";
-import project from "../api/Project";
-import UploadImage from "../utils/UploadImage";
 import { toast } from "sonner";
+import UploadImage from "../utils/UploadImage";
+import project from "../api/Project";
 import { QueryStatus } from "@reduxjs/toolkit/query";
 
+interface field {
+    fieldType?: React.HTMLInputTypeAttribute,
+    fieldPlaceholder: string,
+    registerKey: string,
+    maxLength?: number,
+    minLength?: number,
+    required?: boolean,
+    className?: string,
+    label: string
+}
+
 const AddProject = () => {
-    const { watch, register, reset, resetField, handleSubmit } = useForm();
+    const method = useForm();
+    const [formFields, setFormFields] = useState<field[]>([]);
     const [addProject, { status }] = project.NewProject();
     const [isLoading, setIsLoading] = useState(false);
-    const [formFields, setFormFields] = useState({
-        project_info: [
-            {
-                label: "Name",
-                placeholder: "FROG",
-                field_type: "text",
-                key: "name",
-                default_value: "FROG",
-                col_span: 1
-            },
-            {
-                label: "Tagline",
-                placeholder: "solana",
-                field_type: "text",
-                key: "tagline",
-                default_value: "solana",
-                col_span: 1
-            },
-            {
-                label: "Logo image (upload)",
-                placeholder: "Upload logo",
-                field_type: "file",
-                key: "logo_image",
-                default_value: "",
-                col_span: 2
-            },
-            {
-                label: "Reward",
-                placeholder: "100000 Tokens",
-                field_type: "text",
-                key: "reward",
-                default_value: "100000 Tokens",
-                col_span: 2
-            }
-        ],
-        social_info: [
-            {
-                label: "Website",
-                placeholder: "https://...",
-                field_type: "url",
-                key: "task.0",
-                default_value: "",
-                col_span: 2
-            },
-            {
-                label: "X (Twitter) link",
-                placeholder: "https://twitter.com/yourproject",
-                field_type: "url",
-                key: "task.1",
-                default_value: "",
-                col_span: 2
-            },
-            {
-                label: "Telegram link",
-                placeholder: "https://t.me/yourchannel",
-                field_type: "url",
-                key: "task.2",
-                default_value: "",
-                col_span: 2
-            },
-        ]
-    });
 
-    const handleAddField = async (e: FieldValues) => {
+    const onSubmit = method.handleSubmit((data) => {
+        if (Number(data?.logo[0]?.size || 0) > 524288) {
+            toast.error("File size exceeds 512 KB");
+            return;
+        }
+
         setIsLoading(true);
-        Promise.resolve(UploadImage(e?.logo_image[0]))
+
+        Promise.resolve(UploadImage(data?.logo[0]))
             .then(async (img) => {
                 if (img === undefined) {
                     toast.error("Image upload failed");
                     return;
                 }
-                toast.success("Image uploaded successfully");
+
                 addProject({
-                    name: e.name,
-                    tagline: e.tagline,
+                    name: data.name,
+                    launchDate: data.launch_date,
                     logo_image: img,
-                    reward: e.reward,
-                    task: e?.task
+                    reward: data.reward,
+                    task: data?.task,
+                    description: data?.description
                 })
             })
             .catch(() => {
+                setIsLoading(false)
                 toast.error("Image upload failed");
             });
-    }
-
+    });
 
     useEffect(() => {
         switch (status) {
             case QueryStatus.fulfilled:
                 toast.success("Project added successfully");
-                reset();
+                method.reset();
                 setIsLoading(false);
                 break;
 
@@ -113,13 +70,12 @@ const AddProject = () => {
                 setIsLoading(true);
                 break;
         }
-    }, [status, reset])
-
+    }, [status, method.reset])
 
 
     return (
         <div className="p-3">
-            
+
             {
                 isLoading &&
                 <div className="fixed w-full flex items-center justify-center">
@@ -127,46 +83,114 @@ const AddProject = () => {
                 </div>
             }
 
-            <form onSubmit={handleSubmit(handleAddField)} className="max-w-7xl mx-auto font-montserrat">
-                <p className="font-medium text-4xl text-white text-center my-5">Add your project</p>
-                <div className="bg-white/5 border border-white/10 p-3 rounded-2xl grid grid-cols-2 gap-6">
-                    {
-                        formFields.project_info.map((field, index) => (
-                            <div key={index} className={`col-span-${field?.col_span}`}>
-                                <p className="text-xs">{field?.label}</p>
-                                <input required {...register(field?.key)} type={field?.field_type} placeholder={field.placeholder} className="p-3 border outline-none border-white/10 bg-white/5 mt-1 rounded-md w-full" />
-                            </div>
-                        ))
-                    }
+            <FormProvider {...method}>
+                <form onSubmit={onSubmit} className="max-w-7xl mx-auto font-montserrat">
+                    <p className="font-medium text-4xl text-white text-center my-5">Add your project</p>
+                    <div className="bg-white/5 p-3 rounded-md grid grid-cols-2 gap-6">
 
-                    {
-                        formFields.social_info.map((field, index) => (
-                            <div key={index} className={`col-span-${field?.col_span}`}>
-                                <p className="text-xs">Task:: {field?.label}</p>
-                                <input required {...register(field?.key)} type={field?.field_type} placeholder={field.placeholder} className="p-3 border outline-none border-white/10 bg-white/5 mt-1 rounded-md w-full" />
-                            </div>
-                        ))
-                    }
+                        <InputField
+                            fieldPlaceholder="Enter project name"
+                            fieldType="text"
+                            registerKey={"name"}
+                            className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
+                            minLength={3}
+                            maxLength={12}
+                            label="Project Name"
+                            required
+                        />
 
-                    <div
-                        onClick={() => (document.getElementById('add_field') as HTMLFormElement).showModal()}
-                        className={`bg-white/5 flex gap-2 justify-center items-center col-span-full p-3 rounded-md h-full cursor-pointer`}>
-                        <FaPlus />
-                        <p>Add Custom Task</p>
+                        <InputField
+                            fieldPlaceholder="Enter launch date"
+                            fieldType="date"
+                            registerKey={"launch_date"}
+                            className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
+                            label="Launch Date"
+                            required
+                        />
+
+                        <InputField
+                            fieldType="file"
+                            registerKey={"logo"}
+                            className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
+                            label="Select Logo"
+                            required
+                            fieldPlaceholder="logo"
+                        />
+
+                        <InputField
+                            fieldType="text"
+                            registerKey={"reward"}
+                            className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
+                            label="Rewards"
+                            fieldPlaceholder="Enter reward (optional)"
+                        />
+
+                        <div className="col-span-full">
+                            <p className="text-xs">Project description</p>
+                            <textarea
+                                placeholder="Write a brief about your project"
+                                {...method.register("description", {
+                                    maxLength: {
+                                        value: 500,
+                                        message: `Maximum 500 characters allowed.`
+                                    },
+                                    minLength: {
+                                        value: 50,
+                                        message: `Minimum 50 characters required.`
+                                    },
+                                    required: {
+                                        message: `Description is required`,
+                                        value: true
+                                    }
+                                })}
+                                className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
+                            />
+                            {method.formState.errors["description"] && (
+                                <p className="text-xs text-red-500 line-clamp-1 mt-1">{method.formState.errors["description"]?.message as string}</p>
+                            )}
+                        </div>
+
+                        <InputField
+                            fieldType="url"
+                            registerKey={"task.0"}
+                            className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
+                            label="X Profile"
+                            fieldPlaceholder="Enter X Handle"
+                            required
+                        />
+                        {
+                            formFields.map((field, index) => (
+                                <InputField
+                                    key={index}
+                                    fieldType={field?.fieldType}
+                                    registerKey={`task.${index + 1}`}
+                                    className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
+                                    label={field?.label}
+                                    fieldPlaceholder={field?.fieldPlaceholder}
+                                />
+                            ))
+                        }
+
+                        <div
+                            onClick={() => (document.getElementById('add_field') as HTMLFormElement).showModal()}
+                            className={`bg-white/5 flex gap-2 justify-center items-center col-span-full p-3 rounded-md h-full cursor-pointer`}>
+                            <FaPlus />
+                            <p>Add Custom Task</p>
+                        </div>
                     </div>
-                </div>
 
-                <div className="flex items-center justify-center">
-                    {
-                        isLoading ?
-                            <button type="button" className="bg-white/5 px-10 py-2 cursor-pointer font-medium rounded-2xl mx-auto my-5">
-                                <span className="loading loading-spinner loading-md"></span>
-                            </button> :
+                    <div className="flex items-center justify-center">
+                        {
+                            // isLoading ?
+                            //     <button type="button" className="bg-white/5 px-10 py-2 cursor-pointer font-medium rounded-2xl mx-auto my-5">
+                            //         <span className="loading loading-spinner loading-md"></span>
+                            //     </button> :
                             <button type="submit" className="bg-white/5 px-10 py-2 cursor-pointer font-medium rounded-2xl mx-auto my-5">Submit</button>
-                    }
-                </div>
+                        }
+                    </div>
 
-            </form>
+                </form>
+            </FormProvider>
 
             <dialog id="add_field" className="modal">
                 <div className="modal-box">
@@ -174,29 +198,24 @@ const AddProject = () => {
                         <legend className="fieldset-legend">Page details</legend>
 
                         <label className="label">Label</label>
-                        <input {...register("add_label")} required type="text" className="input w-full" placeholder="Enter task label" />
+                        <input {...method.register("add_label")} required type="text" className="input w-full" placeholder="Enter task label" />
 
                         <button
                             onClick={() => {
-                                const newLabel = watch("add_label");
+                                const newLabel = method.watch("add_label");
 
                                 if (newLabel) {
-                                    const newField = {
-                                        col_span: 1,
-                                        default_value: "",
-                                        field_type: "text",
-                                        key: "task." + (formFields.social_info.length + 1),
+                                    const newField: field = {
+                                        fieldType: "text",
+                                        registerKey: "task." + ((formFields?.length || 0) + 1),
                                         label: newLabel,
-                                        placeholder: "Enter " + newLabel
+                                        fieldPlaceholder: "Enter " + newLabel,
                                     };
 
                                     // Update the state (immutable way)
-                                    setFormFields(prev => ({
-                                        ...prev,
-                                        social_info: [...prev.social_info, newField]
-                                    }));
+                                    setFormFields([...formFields, newField]);
 
-                                    resetField("add_label");
+                                    method.resetField("add_label");
                                     (document.getElementById('add_field') as HTMLFormElement).close();
                                 }
                             }}
@@ -213,3 +232,43 @@ const AddProject = () => {
 };
 
 export default AddProject;
+
+
+const InputField = ({ fieldType, fieldPlaceholder, registerKey, maxLength, minLength, className, label, required }: { fieldType?: React.HTMLInputTypeAttribute, fieldPlaceholder: string, registerKey: string, maxLength?: number, minLength?: number, required?: boolean, className?: string, label: string }) => {
+
+    const { register, formState: { errors, } } = useFormContext();
+
+    return (
+        <div>
+            <p className="text-xs">{label}</p>
+            <input
+                type={fieldType}
+                placeholder={fieldPlaceholder}
+                {...register(registerKey, {
+                    ...(maxLength && {
+                        maxLength: {
+                            value: maxLength,
+                            message: `Maximum ${maxLength} characters allowed.`
+                        }
+                    }),
+                    ...(minLength && {
+                        minLength: {
+                            value: minLength,
+                            message: `Minimum ${minLength} characters required.`
+                        }
+                    }),
+                    ...(required && {
+                        required: {
+                            message: `${label} is required`,
+                            value: true
+                        }
+                    }),
+                })}
+                className={className}
+            />
+            {errors[registerKey] && (
+                <p className="text-xs text-red-500 line-clamp-1 mt-1">{errors[registerKey]?.message as string}</p>
+            )}
+        </div>
+    )
+}

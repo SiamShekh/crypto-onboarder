@@ -74,7 +74,8 @@ model project {
   userId          Int // ID of the user who submitted the project
   user            User              @relation(fields: [userId], references: [id]) // Relation to the User entity
   name            String // Name of the project
-  tagline         String // Tagline of the project
+  description     String // description of the project
+  launchDate      DateTime // Launch Date of the project
   image           String // URL to the project's image/logo
   reward          String // how much reward the project offers
   task            String[] // List of tasks associated with the project

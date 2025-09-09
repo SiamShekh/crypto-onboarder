@@ -8,8 +8,9 @@ const addProject = CatchAsync(async (req, res) => {
         const project = await transactionClient.project.create({
             data: {
                 name: body?.name,
-                tagline: body?.tagline,
+                launchDate: new Date(body?.launchDate),
                 image: body?.logo_image,
+                description: body?.description,
                 reward: body?.reward,
                 task: body?.task,
                 userId: req?.user?.id
@@ -44,7 +45,7 @@ const getProjects = CatchAsync(async (req, res) => {
             id: true,
             image: true,
             name: true,
-            tagline: true,
+            launchDate: true,
             reward: true,
         }
     })
@@ -62,7 +63,7 @@ const getMyProjects = CatchAsync(async (req, res) => {
             id: true,
             image: true,
             name: true,
-            tagline: true,
+            launchDate: true,
             reward: true,
         }
     });
@@ -226,7 +227,7 @@ const getAdminProjects = CatchAsync(async (req, res) => {
             id: true,
             image: true,
             name: true,
-            tagline: true,
+            launchDate: true,
             reward: true,
             task: true,
             _count: {
