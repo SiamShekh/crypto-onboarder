@@ -9,7 +9,7 @@ const BaseApi = createApi({
         credentials: "include"
     }),
     endpoints: () => ({}),
-    tagTypes: ["user", "project", "admin"]
+    tagTypes: ["user", "project", "admin","task"]
 });
 
 export default BaseApi;

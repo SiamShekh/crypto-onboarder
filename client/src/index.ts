@@ -40,3 +40,13 @@ export type IP = {
   info: string;
   createdAt: Date;
 };
+
+export interface Task {
+  id: number
+  projectId: number
+  userId: number
+  taskLabel: string
+  taskImg: string
+  taskHref: string
+  createdAt: string
+}

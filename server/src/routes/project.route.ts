@@ -10,10 +10,11 @@ ProjectRoute.get("/me", UserVaildation, project.getMyProjects);
 ProjectRoute.get("/specific", UserVaildation, project.getSpacificProject);
 ProjectRoute.patch("/update/:id", UserVaildation, project.updateProject);
 ProjectRoute.patch("/delete/:id", UserVaildation, project.softDeleteProject);
+ProjectRoute.get("/slug", UserVaildation, project.getProjectBySlugId);
 ProjectRoute.post("/traffic", project.referrelIp);
 ProjectRoute.get("/admin", AdminVaildation, project.getAdminProjects);
 ProjectRoute.patch("/admin", AdminVaildation, project.deleteProject);
 ProjectRoute.patch("/undo", AdminVaildation, project.undoProject);
 
-
+ 
 export default ProjectRoute;

@@ -93,6 +93,14 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
             }),
             invalidatesTags: ["project"]
         }),
+        getProjectBySlug: builder.query({
+            query: ({ slug }: { slug: string }) => ({
+                url: "/project/slug",
+                method: "GET",
+                params: { slug }
+            }),
+            providesTags: ["project"]
+        }),
     })
 });
 
@@ -118,7 +126,11 @@ const project = {
     SoftDeleteProject: ProjectEndpoint.useSoftDeleteProjectMutation,
     projectTraffic: ProjectEndpoint.useProjectTrafficMutation,
     DeleteAdminProject: ProjectEndpoint.useDeleteAdminProjectMutation,
-    UndoAdminProject: ProjectEndpoint.useUndoAdminProjectMutation
+    UndoAdminProject: ProjectEndpoint.useUndoAdminProjectMutation,
+    getProjectBySlug:{
+        use: ProjectEndpoint.useGetProjectBySlugQuery,
+        lazy: ProjectEndpoint.useLazyGetProjectBySlugQuery
+    }
 }
 
 export default project;

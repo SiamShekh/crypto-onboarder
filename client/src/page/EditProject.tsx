@@ -5,12 +5,17 @@ import { useEffect } from "react";
 import { QueryStatus } from "@reduxjs/toolkit/query";
 import { toast } from "sonner";
 import InputField from "../components/item/InputField";
+import UploadImage from "../utils/UploadImage";
+import task from "../api/Task";
+import { FaChevronRight } from "react-icons/fa";
+import { Task } from "..";
 
 const EditProject = () => {
     const param = useParams();
-    const { data, isFetching } = project.getSpecificProject.use({ slug: param?.id as string });
+    const { data, isFetching } = project.getProjectBySlug.use({ slug: param?.id as string });
     const method = useForm();
     const [updateProjectMutation, { status: updateProjectStatus, isLoading }] = project.UpdateProject();
+    const deleteTaskMutation = task.DeleteTask();
 
     const addYourProject = async (e: FieldValues) => {
         updateProjectMutation({
@@ -55,8 +60,20 @@ const EditProject = () => {
     };
 
 
+    useEffect(() => {
+        switch (deleteTaskMutation[1]?.status) {
+            case QueryStatus.fulfilled:
+                toast.success(`Task successfully deleted.`);
+                break;
+
+            case QueryStatus.rejected:
+                toast.error(`Something went wrong.`);
+                break;
+        }
+    }, [deleteTaskMutation[1]?.status])
+
     return (
-        <div>
+        <div className="py-5">
             {
                 isFetching &&
                 <div className="fixed w-full flex items-center justify-center">
@@ -64,7 +81,7 @@ const EditProject = () => {
                 </div>
             }
 
-            <NewTaskModal />
+            <NewTaskModal projectId={data?.id} />
 
             <FormProvider {...method}>
                 <form onSubmit={method.handleSubmit(addYourProject)} className="max-w-7xl mx-auto font-montserrat">
@@ -141,11 +158,70 @@ const EditProject = () => {
 
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center justify-between">
-                    <p className="font-montserrat">Task: 2</p>
+                    <p className="font-montserrat">Task: {data?.task?.length}</p>
 
                     <button
                         onClick={() => (document.getElementById('new_task') as HTMLDialogElement).showModal()}
                         className="text-xs bg-white/5 font-montserrat px-4 cursor-pointer py-2 rounded-lg">Add Task</button>
+                </div>
+
+                <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 mt-4">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Task</th>
+                                <th>Link</th>
+                                <th>Created At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                isFetching ?
+                                    <TableSkelaton /> :
+                                    data?.task?.length === 0 || data?.task?.length === undefined ?
+                                        <td className="" colSpan={5}>
+                                            <div className="text-center font-medium my-10 font-montserrat">
+                                                <p>No task found</p>
+                                            </div>
+                                        </td>
+                                        :
+                                        data?.task?.map((task: Task, index: number) => (
+                                            <tr>
+                                                <th>{index + 1}</th>
+                                                <td>
+                                                    <div className="flex items-center gap-3">
+                                                        <img
+                                                            className="size-8 bg-white/5 border border-white/5 rounded-xl"
+                                                            src={task?.taskImg}
+                                                            alt={task?.taskLabel} />
+                                                        <p className="text-base font-montserrat font-medium line-clamp-1">{task?.taskLabel}</p>
+                                                    </div>
+                                                </td>
+                                                <td className="line-clamp-1">{task?.taskHref}</td>
+                                                <td className="">{new Date(task?.createdAt).toLocaleDateString()}</td>
+                                                <td>
+                                                    {
+                                                        deleteTaskMutation[1]?.isLoading ?
+                                                            <button
+                                                                type="button"
+                                                                className="bg-[#FFADAD] text-black font-monda text-xs px-4 py-1 rounded-sm">
+                                                                <span className="loading loading-spinner loading-xs" />
+                                                            </button> :
+                                                            <button
+                                                                onClick={() => deleteTaskMutation[0]({ id: task?.id })}
+                                                                type="button"
+                                                                className="bg-[#FFADAD] text-black font-monda text-xs px-4 py-1 rounded-sm">Delete</button>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        ))
+                            }
+
+
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -154,16 +230,68 @@ const EditProject = () => {
 
 export default EditProject;
 
-const NewTaskModal = () => {
+const NewTaskModal = ({ projectId }: { projectId: number }) => {
     const methods = useForm();
+    const taskApi = task.AddTask();
 
     const onSubmit = async (e: FieldValues) => {
         console.log(e);
+        Promise.resolve(UploadImage(e?.icon[0]))
+            .then((imgUrl) => {
+                console.log(`img: `, imgUrl);
+                taskApi[0]({
+                    taskLabel: e?.title,
+                    taskImg: imgUrl,
+                    taskHref: e?.link,
+                    projectId: projectId
+                })
+            })
+            .catch((err) => {
+                toast.error(err);
+            })
     }
+
+    console.log(methods.watch("title"));
+
+    useEffect(() => {
+        switch (taskApi[1]?.status) {
+            case QueryStatus.fulfilled:
+                toast.success("Task created successfully");
+                break;
+
+            case QueryStatus.pending:
+                toast.error("Something went wrong");
+                break;
+        }
+    }, [taskApi[1].status])
+
 
     return (
         <dialog id="new_task" className="modal">
             <div className="modal-box font-montserrat">
+                <div className="border border-white/10 mb-4 p-3 rounded-lg flex gap-3 items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="size-12 relative overflow-hidden bg-white/5 rounded-xl">
+                            {
+                                methods.watch("icon") && methods.watch("icon")[0] &&
+                                <img src={URL.createObjectURL(methods.watch("icon")[0])} alt="icon" />
+                            }
+                        </div>
+                        <div>
+                            {
+                                methods.watch("title") ?
+                                    <p className="line-clamp-1 text-white">{methods.watch("title")}</p> :
+                                    <p className="w-40 rounded-sm h-6 bg-white/5" />
+                            }
+                            {
+                                methods.watch("link") ?
+                                    <p className="text-xs line-clamp-1">{methods.watch("link")}</p> :
+                                    <p className="w-24 rounded-sm h-4 mt-2 bg-white/5" />
+                            }
+                        </div>
+                    </div>
+                    <FaChevronRight className="text-2xl opacity-40" />
+                </div>
                 <p className="text-xl text-center">Add Task</p>
                 <FormProvider {...methods}>
                     <form onSubmit={methods.handleSubmit(onSubmit)} className="my-5 flex flex-col gap-5">
@@ -190,7 +318,10 @@ const NewTaskModal = () => {
                             required
                             className="outline-none bg-white/10 w-full p-3 rounded-md"
                         />
+                        {
 
+                        }
+                        <button type="submit" className="bg-white text-black font-medium p-3 rounded-full">Add Task</button>
                         <button type="submit" className="bg-white text-black font-medium p-3 rounded-full">Add Task</button>
                     </form>
                 </FormProvider>
@@ -198,3 +329,68 @@ const NewTaskModal = () => {
         </dialog>
     )
 }
+
+const TableSkelaton = () => (
+    <>
+        <tr>
+            <th>
+                <div className="size-6 rounded-xl bg-white/10"></div>
+            </th>
+            <td>
+                <div className="flex items-center gap-3">
+                    <div className="size-8 bg-white/5 border border-white/5 rounded-xl" />
+                    <p className="w-32 rounded-sm h-6 bg-white/5" />
+                </div>
+            </td>
+            <td>
+                <p className="w-32 h-6 rounded-sm bg-white/5" />
+            </td>
+            <td>
+                <p className="w-32 h-6 rounded-sm bg-white/5" />
+            </td>
+            <td>
+                <p className="w-32 h-6 rounded-sm bg-white/5" />
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <div className="size-6 rounded-xl bg-white/10"></div>
+            </th>
+            <td>
+                <div className="flex items-center gap-3">
+                    <div className="size-8 bg-white/5 border border-white/5 rounded-xl" />
+                    <p className="w-32 rounded-sm h-6 bg-white/5" />
+                </div>
+            </td>
+            <td>
+                <p className="w-32 h-6 rounded-sm bg-white/5" />
+            </td>
+            <td>
+                <p className="w-32 h-6 rounded-sm bg-white/5" />
+            </td>
+            <td>
+                <p className="w-32 h-6 rounded-sm bg-white/5" />
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <div className="size-6 rounded-xl bg-white/10"></div>
+            </th>
+            <td>
+                <div className="flex items-center gap-3">
+                    <div className="size-8 bg-white/5 border border-white/5 rounded-xl" />
+                    <p className="w-32 rounded-sm h-6 bg-white/5" />
+                </div>
+            </td>
+            <td>
+                <p className="w-32 h-6 rounded-sm bg-white/5" />
+            </td>
+            <td>
+                <p className="w-32 h-6 rounded-sm bg-white/5" />
+            </td>
+            <td>
+                <p className="w-32 h-6 rounded-sm bg-white/5" />
+            </td>
+        </tr>
+    </>
+)
