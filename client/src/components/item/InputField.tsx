@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 
-const InputField = ({ fieldType, fieldPlaceholder, registerKey, maxLength, minLength, className, label, required }: { fieldType?: React.HTMLInputTypeAttribute, fieldPlaceholder: string, registerKey: string, maxLength?: number, minLength?: number, required?: boolean, className?: string, label: string }) => {
+const InputField = ({ fieldType, fieldPlaceholder, registerKey, maxLength, minLength, className, label, required }: { fieldType?: React.HTMLInputTypeAttribute, fieldPlaceholder?: string, registerKey: string, maxLength?: number, minLength?: number, required?: boolean, className?: string, label: string }) => {
 
     const { register, formState: { errors, } } = useFormContext();
     

@@ -64,6 +64,8 @@ const EditProject = () => {
                 </div>
             }
 
+            <NewTaskModal />
+
             <FormProvider {...method}>
                 <form onSubmit={method.handleSubmit(addYourProject)} className="max-w-7xl mx-auto font-montserrat">
                     <p className="font-medium text-4xl text-white text-center my-5">Edit your project</p>
@@ -134,10 +136,65 @@ const EditProject = () => {
                     </div>
                 </form>
             </FormProvider>
-            <div className="divider max-w-7xl mx-auto">OR</div>
 
+            <div className="divider max-w-2xl mx-auto">OR</div>
+
+            <div className="max-w-7xl mx-auto">
+                <div className="flex items-center justify-between">
+                    <p className="font-montserrat">Task: 2</p>
+
+                    <button
+                        onClick={() => (document.getElementById('new_task') as HTMLDialogElement).showModal()}
+                        className="text-xs bg-white/5 font-montserrat px-4 cursor-pointer py-2 rounded-lg">Add Task</button>
+                </div>
+            </div>
         </div>
     );
 };
 
 export default EditProject;
+
+const NewTaskModal = () => {
+    const methods = useForm();
+
+    const onSubmit = async (e: FieldValues) => {
+        console.log(e);
+    }
+
+    return (
+        <dialog id="new_task" className="modal">
+            <div className="modal-box font-montserrat">
+                <p className="text-xl text-center">Add Task</p>
+                <FormProvider {...methods}>
+                    <form onSubmit={methods.handleSubmit(onSubmit)} className="my-5 flex flex-col gap-5">
+                        <InputField
+                            label="Title"
+                            fieldPlaceholder="Enter task title"
+                            registerKey="title"
+                            fieldType="text"
+                            required
+                            className="outline-none bg-white/10 w-full p-3 rounded-md"
+                        />
+                        <InputField
+                            label="Link"
+                            fieldPlaceholder="Enter task link"
+                            registerKey="link"
+                            fieldType="url"
+                            required
+                            className="outline-none bg-white/10 w-full p-3 rounded-md"
+                        />
+                        <InputField
+                            label="Icon"
+                            registerKey="icon"
+                            fieldType="file"
+                            required
+                            className="outline-none bg-white/10 w-full p-3 rounded-md"
+                        />
+
+                        <button type="submit" className="bg-white text-black font-medium p-3 rounded-full">Add Task</button>
+                    </form>
+                </FormProvider>
+            </div>
+        </dialog>
+    )
+}
