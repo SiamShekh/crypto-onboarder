@@ -1,10 +1,16 @@
 import { prisma } from "..";
 import { CatchAsync } from "../utils/Utilite";
+import uniqueSlug from "unique-slug";
+import slugify from "slugify";
 
 const addProject = CatchAsync(async (req, res) => {
     const body = req.body;
 
     const result = await prisma.$transaction(async (transactionClient) => {
+        const randomSlug = uniqueSlug();
+        const slug = slugify(body?.name, { lower: true, trim: true });
+        const hyperLink = `${slug}-${randomSlug}`;
+
         const project = await transactionClient.project.create({
             data: {
                 name: body?.name,
@@ -12,7 +18,8 @@ const addProject = CatchAsync(async (req, res) => {
                 image: body?.logo_image,
                 description: body?.description,
                 reward: body?.reward,
-                userId: req?.user?.id
+                userId: req?.user?.id,
+                slug: hyperLink
             }
         });
 
@@ -51,13 +58,13 @@ const getMyProjects = CatchAsync(async (req, res) => {
             userId: req?.user?.id,
             isDelete: false
         },
-        select: {
-            id: true,
-            image: true,
-            name: true,
-            launchDate: true,
-            reward: true,
-        }
+        // select: {
+        //     id: true,
+        //     image: true,
+        //     name: true,
+        //     launchDate: true,
+        //     reward: true,
+        // }
     });
 
     res.status(200).json(projects);
