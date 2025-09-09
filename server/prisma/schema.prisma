@@ -25,6 +25,7 @@ model User {
   ips             IP[]
   project         project[]
   ProjectReferrel ProjectReferrel[]
+  task            task[]
 }
 
 /// Stores user IP details and geo-location metadata for auditing or fraud prevention.
@@ -78,11 +79,34 @@ model project {
   launchDate      DateTime // Launch Date of the project
   image           String // URL to the project's image/logo
   reward          String // how much reward the project offers
-  task            String[] // List of tasks associated with the project
   isDelete        Boolean           @default(false) // Soft delete flag:: user can delete project from his profile
   createdAt       DateTime          @default(now()) // Timestamp when the project was created
   updatedAt       DateTime          @updatedAt // Timestamp when the project was last updated
   ProjectReferrel ProjectReferrel[]
+  task            task[]
+}
+
+/// Task For any project
+model task {
+  id        Int      @id @default(autoincrement()) // task uniuqe id
+  projectId Int
+  project   project  @relation(fields: [projectId], references: [id])
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  category  taskCategory
+  taskLabel String
+  taskHref  String
+  createdAt DateTime @default(now())
+}
+
+/// task category enum
+enum taskCategory {
+  telegram
+  youtube
+  facebook
+  x
+  reddit
+  discord
 }
 
 /// Project referrel model 
