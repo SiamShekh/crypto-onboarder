@@ -1,15 +1,16 @@
-export type Project = {
-  id: number;
-  userId: number;
-  user: User;
-  name: string;
-  tagline: string;
-  image: string;
-  reward: string;
-  task: string[];
-  createdAt: Date;
-  updatedAt: Date;
-};
+export interface Project {
+  id: number
+  userId: number
+  name: string
+  description: string
+  launchDate: Date
+  image: string
+  reward: string
+  isDelete: boolean
+  createdAt: string
+  updatedAt: string
+}
+
 
 export type User = {
   id: number;

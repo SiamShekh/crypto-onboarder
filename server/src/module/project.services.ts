@@ -12,7 +12,6 @@ const addProject = CatchAsync(async (req, res) => {
                 image: body?.logo_image,
                 description: body?.description,
                 reward: body?.reward,
-                task: body?.task,
                 userId: req?.user?.id
             }
         });
@@ -41,13 +40,6 @@ const getProjects = CatchAsync(async (req, res) => {
         },
         take: 20,
         ...(page && { skip: Number(page) * 20 }),
-        select: {
-            id: true,
-            image: true,
-            name: true,
-            launchDate: true,
-            reward: true,
-        }
     })
 
     res.status(200).json(projects);

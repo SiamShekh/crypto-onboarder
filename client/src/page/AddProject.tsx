@@ -1,4 +1,3 @@
-import { FaPlus } from "react-icons/fa";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -19,8 +18,7 @@ interface field {
 
 const AddProject = () => {
     const method = useForm();
-    const [formFields, setFormFields] = useState<field[]>([]);
-    const [addProject, { status }] = project.NewProject();
+    const [addProject, { status, data: projectData }] = project.NewProject();
     const [isLoading, setIsLoading] = useState(false);
 
     const onSubmit = method.handleSubmit((data) => {
@@ -56,9 +54,13 @@ const AddProject = () => {
     useEffect(() => {
         switch (status) {
             case QueryStatus.fulfilled:
-                toast.success("Project added successfully");
-                method.reset();
                 setIsLoading(false);
+                if (projectData?.status === "success") {
+                    toast.success("Project added successfully");
+                    method.reset();
+                } else {
+                    toast.error("Something went wrong");
+                }
                 break;
 
             case QueryStatus.rejected:
@@ -149,84 +151,20 @@ const AddProject = () => {
                                 <p className="text-xs text-red-500 line-clamp-1 mt-1">{method.formState.errors["description"]?.message as string}</p>
                             )}
                         </div>
-
-                        <InputField
-                            fieldType="url"
-                            registerKey={"task.0"}
-                            className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
-                            label="X Profile"
-                            fieldPlaceholder="Enter X Handle"
-                            required
-                        />
-                        {
-                            formFields.map((field, index) => (
-                                <InputField
-                                    key={index}
-                                    fieldType={field?.fieldType}
-                                    registerKey={`task.${index + 1}`}
-                                    className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
-                                    label={field?.label}
-                                    fieldPlaceholder={field?.fieldPlaceholder}
-                                />
-                            ))
-                        }
-
-                        <div
-                            onClick={() => (document.getElementById('add_field') as HTMLFormElement).showModal()}
-                            className={`bg-white/5 flex gap-2 justify-center items-center col-span-full p-3 rounded-md h-full cursor-pointer`}>
-                            <FaPlus />
-                            <p>Add Custom Task</p>
-                        </div>
                     </div>
 
                     <div className="flex items-center justify-center">
                         {
-                            // isLoading ?
-                            //     <button type="button" className="bg-white/5 px-10 py-2 cursor-pointer font-medium rounded-2xl mx-auto my-5">
-                            //         <span className="loading loading-spinner loading-md"></span>
-                            //     </button> :
-                            <button type="submit" className="bg-white/5 px-10 py-2 cursor-pointer font-medium rounded-2xl mx-auto my-5">Submit</button>
+                            isLoading ?
+                                <button type="button" className="bg-white/5 px-10 py-2 cursor-pointer font-medium rounded-2xl mx-auto my-5">
+                                    <span className="loading loading-spinner loading-md"></span>
+                                </button> :
+                                <button type="submit" className="bg-white/5 px-10 py-2 cursor-pointer font-medium rounded-2xl mx-auto my-5">Submit</button>
                         }
                     </div>
 
                 </form>
             </FormProvider>
-
-            <dialog id="add_field" className="modal">
-                <div className="modal-box">
-                    <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-full mx-auto border p-4">
-                        <legend className="fieldset-legend">Page details</legend>
-
-                        <label className="label">Label</label>
-                        <input {...method.register("add_label")} required type="text" className="input w-full" placeholder="Enter task label" />
-
-                        <button
-                            onClick={() => {
-                                const newLabel = method.watch("add_label");
-
-                                if (newLabel) {
-                                    const newField: field = {
-                                        fieldType: "text",
-                                        registerKey: "task." + ((formFields?.length || 0) + 1),
-                                        label: newLabel,
-                                        fieldPlaceholder: "Enter " + newLabel,
-                                    };
-
-                                    // Update the state (immutable way)
-                                    setFormFields([...formFields, newField]);
-
-                                    method.resetField("add_label");
-                                    (document.getElementById('add_field') as HTMLFormElement).close();
-                                }
-                            }}
-                            type="button"
-                            className="bg-white p-2 mt-4 w-fit mx-auto text-black font-medium rounded-md">Add Field</button>
-                    </fieldset>
-                </div>
-                <form method="dialog" className="modal-backdrop">
-                    <button>close</button>
-                </form>
-            </dialog>
         </div>
     );
 };

@@ -55,17 +55,24 @@ const Explore = () => {
                                 <div key={item?.id} className="bg-white/5 rounded-lg lg:rounded-2xl p-3">
                                     <div className="flex items-center justify-between mb-5">
                                         <div className="flex items-center gap-3">
-                                            <img src={item?.image} alt={item?.name} className="size-12 object-contain" />
+                                            <div className="size-12 relative">
+                                                <img src={item?.image} alt={item?.name} className="size-12 object-contain bg-white/10 rounded-full" />
+                                                <div className="size-4 bg-green-500/40 backdrop-blur-lg rounded-full absolute right-0 bottom-0"></div>
+                                            </div>
                                             <div>
                                                 <p className="font-monda text-xl line-clamp-1 capitalize">{item?.name}</p>
-                                                <p className="font-montserrat text-sm line-clamp-1 opacity-60">{item?.reward}</p>
+                                                {
+                                                    item?.launchDate ?
+                                                    <p className="font-montserrat text-xs line-clamp-1 opacity-60">Launch at: {new Date(item?.launchDate)?.toLocaleDateString()}</p>:
+                                                    <p className="font-montserrat text-xs line-clamp-1 opacity-60">Reward: {item?.reward}</p>
+                                                }
                                             </div>
                                         </div>
                                         <a href={`/detail/${item?.id}`}>
                                             <button className="font-montserrat text-sm font-medium bg-white/10 p-1 px-4 rounded-md cursor-pointer">Details</button>
                                         </a>
                                     </div>
-                                    <p className="font-montserrat bg-white/10 p-3 rounded-md">{item?.tagline}</p>
+                                    <p className="font-montserrat bg-white/10 p-3 rounded-md line-clamp-3">{item?.description}</p>
                                 </div>
                             ))
                 }
