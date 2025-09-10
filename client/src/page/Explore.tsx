@@ -57,14 +57,17 @@ const Explore = () => {
                                         <div className="flex items-center gap-3">
                                             <div className="size-12 relative">
                                                 <img src={item?.image} alt={item?.name} className="size-12 object-contain bg-white/10 rounded-full" />
-                                                <div className="size-4 bg-green-500/40 backdrop-blur-lg rounded-full absolute right-0 bottom-0"></div>
+                                                {
+                                                    item?.isVerified &&
+                                                    <div className="size-4 bg-green-500/40 backdrop-blur-lg rounded-full absolute right-0 bottom-0"></div>
+                                                }
                                             </div>
                                             <div>
                                                 <p className="font-monda text-xl line-clamp-1 capitalize">{item?.name}</p>
                                                 {
                                                     item?.launchDate ?
-                                                    <p className="font-montserrat text-xs line-clamp-1 opacity-60">Launch at: {new Date(item?.launchDate)?.toLocaleDateString()}</p>:
-                                                    <p className="font-montserrat text-xs line-clamp-1 opacity-60">Reward: {item?.reward}</p>
+                                                        <p className="font-montserrat text-xs line-clamp-1 opacity-60">Launch at: {new Date(item?.launchDate)?.toLocaleDateString()}</p> :
+                                                        <p className="font-montserrat text-xs line-clamp-1 opacity-60">Reward: {item?.reward}</p>
                                                 }
                                             </div>
                                         </div>

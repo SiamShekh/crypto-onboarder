@@ -4,9 +4,9 @@ import { ContextValues } from "../utils/ContextApi";
 import { FaCopy } from "react-icons/fa";
 import { MdDoNotDisturb } from "react-icons/md";
 import project from "../api/Project";
-import { Project } from "..";
+import { Project, RTKErrorTypes } from "..";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 import user from "../api/User";
 import { QueryStatus } from "@reduxjs/toolkit/query";
 import { Link } from "react-router-dom";
@@ -15,7 +15,7 @@ const Profile = () => {
     const values = useContext(ContextValues);
     const { data, isFetching } = project.getMyProjects.use(undefined);
     const { setValue, watch, resetField } = useForm();
-    const [updateUsernameMutation, { status: updateStatus, data: updateUsernameData }] = user.updateUsername();
+    const [updateUsernameMutation, { status: updateStatus, error: updateUsernameError }] = user.updateUsername();
 
     const handleUpdateUsername = () => {
         if (!watch("username")) {
@@ -29,22 +29,17 @@ const Profile = () => {
     useEffect(() => {
         switch (updateStatus) {
             case QueryStatus.fulfilled:
-
-                if (updateUsernameData?.code === 400) {
-                    toast.error(updateUsernameData?.msg || "Failed to update username");
-                } else {
-                    toast.success("Username updated successfully");
-                    resetField("username");
-                    (document.getElementById('updateUsername') as HTMLDialogElement).close();
-                }
+                toast.success("Username updated successfully");
+                resetField("username");
+                (document.getElementById('updateUsername') as HTMLDialogElement).close();
 
                 break;
 
             case QueryStatus.rejected:
-                toast.error("Failed to update username");
+                toast.error((updateUsernameError as RTKErrorTypes)?.data?.msg || "Failed to update username");
                 break;
         }
-    }, [updateStatus, resetField, updateUsernameData?.code, updateUsernameData?.msg])
+    }, [resetField, updateStatus, updateUsernameError])
 
     return (
         <div className="max-w-5xl mx-auto p-3">
@@ -108,6 +103,7 @@ const Profile = () => {
                             onChange={(e) => setValue("username", e.target.value)}
                             required
                             type="text"
+                            defaultValue={values?.user?.data?.username}
                             className="input w-full"
                             placeholder="Enter username" />
                         <button
@@ -127,7 +123,7 @@ const Profile = () => {
 export default Profile;
 
 const ProjectCard = ({ item }: { item: Project }) => {
-    const deleteMutation = project.SoftDeleteProject();
+    const [deleteMutation, { data: deleteData, error: deleteError, isLoading: deleteIsLoading, isSuccess, isError }] = project.SoftDeleteProject();
 
     const handleDelete = () => {
         if (!item?.id) {
@@ -135,14 +131,38 @@ const ProjectCard = ({ item }: { item: Project }) => {
             return;
         }
 
-        deleteMutation[0]({ id: String(item.id) });
+        deleteMutation({ id: String(item.id) });
     }
+
+    useEffect(() => {
+        if (isSuccess) {
+            if (deleteData?.isDelete) {
+                toast.success("Project deleted successfully.");
+            } else {
+                toast.error("Project deletion failed.");
+            }
+        } else if (isError) {
+            toast.error(
+                (deleteError as RTKErrorTypes)?.data?.msg ??
+                "An unexpected error occurred while deleting the project."
+            );
+        }
+    }, [isSuccess, isError, deleteData, deleteError]);
+
+
 
     return (
         <div key={item?.id} className="bg-white/5 rounded-2xl p-3">
+            <Toaster />
             <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
-                    <img src={item?.image} alt={item?.name} className="md:size-12 size-8 object-contain" />
+                    <div className="md:size-12 size-8 bg-white/5 rounded-full border border-white/5 relative">
+                        <img src={item?.image} alt={item?.name} className=" object-contain" />
+                        {
+                            item?.isVerified &&
+                            <div className="size-3 rounded-full bg-green-500/50 absolute right-0 bottom-0"></div>
+                        }
+                    </div>
                     <div>
                         <p className="font-monda text-xl line-clamp-1 capitalize">{item?.name}</p>
                         <p className="font-montserrat text-xs line-clamp-1 opacity-60">{new Date(item?.launchDate).toLocaleDateString()} - <a className="text-xs font-medium text-white" href={`/detail/${item?.id}`}>Details</a></p>
@@ -155,7 +175,7 @@ const ProjectCard = ({ item }: { item: Project }) => {
             </div>
 
             {
-                deleteMutation[1].isLoading ?
+                deleteIsLoading ?
                     <button
                         className="bg-[#8A0000] text-white font-monda text-sm cursor-pointer border border-red-700 py-2 rounded-sm mt-5 w-full">
                         <span className="loading loading-spinner loading-md"></span>

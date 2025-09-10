@@ -43,7 +43,13 @@ const ProjectDetails = () => {
                             </div> :
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <img src={data?.image} alt={data?.name} className="size-14 bg-black rounded-xl p-2" />
+                                    <div className="size-14 bg-black rounded-full relative">
+                                        <img src={data?.image} alt={data?.name} className="object-contain" />
+                                        {
+                                            data?.isVerified &&
+                                            <div className="size-4 bg-green-500/50 backdrop-blur-md rounded-full absolute right-0 bottom-0"></div>
+                                        }
+                                    </div>
                                     <div>
                                         <p className="font-monda text-xl">{data?.name}</p>
                                         {
