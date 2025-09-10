@@ -13,6 +13,8 @@ import Dashboard from "./page/admin/Dashboard";
 import ContextApiAdmin from "./utils/ContextApiAdmin";
 import Wallet from "./page/admin/Wallet";
 import Project from "./page/admin/Project";
+import Terms from "./page/Terms";
+import Privacy from "./page/Privacy";
 
 const Routes = createBrowserRouter([
     {
@@ -47,7 +49,15 @@ const Routes = createBrowserRouter([
             {
                 path: "/detail/:slug",
                 element: <ProjectDetails />
-            }
+            },
+            {
+                path: "/terms",
+                element: <Terms />
+            },
+            {
+                path: "/privacy",
+                element: <Privacy />
+            },
         ]
     },
     {

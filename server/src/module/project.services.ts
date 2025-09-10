@@ -35,7 +35,6 @@ const addProject = CatchAsync(async (req, res) => {
 
 const getProjects = CatchAsync(async (req, res) => {
     const { page, search, verified } = req.query;
-    console.log(verified);
 
     const projects = await prisma.project.findMany({
         where: {

@@ -1,6 +1,6 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import icon from "../assets/icon.webp";
-import { FaWallet } from "react-icons/fa";
+import { FaTelegramPlane, FaWallet } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletName } from "@solana/wallet-adapter-base";
@@ -29,6 +29,11 @@ const MainLayout = () => {
             name: "Add Project",
             href: "/add-project"
         },
+        {
+            id: 4,
+            name: "Earn Rewards",
+            href: "/earn-reward"
+        }
     ]
 
     const {
@@ -113,6 +118,23 @@ const MainLayout = () => {
                 </div>
             </dialog>
 
+            <dialog id="earn_reward_modal" className="modal backdrop-blur-xs">
+                <div className="modal-box border border-white/10 font-montserrat">
+                    <p className="text-center font-monda text-xl">How Rewards Work on WhyBuy</p>
+                    <p className="text-center text-xs mt-2 text-yellow-500 font-medium">Browse upcoming memecoins listed before launch</p>
+                    <p className="text-center text-xs mt-2 text-yellow-500 font-medium">Complete Tasks like Follow on X, join telegram, visit website, or other simple social tasks</p>
+                    <p className="text-center text-xs mt-2 text-yellow-500 font-medium">Once task are done, unlock and claim your reward (token, whitelist spot, or points)</p>
+                    <p className="text-center text-xs mt-2 text-yellow-500 font-medium">Rewards are distributed directly by the project team</p>
+                    <p className="text-center text-xs mt-2 text-yellow-500 font-medium">Share your referral link and climb the leaderboard for extra perks</p>
+
+                    <button
+                        onClick={() => {
+                            (document.getElementById('earn_reward_modal') as HTMLDialogElement).close();
+                        }}
+                        className="text-[#c1ff72] text-center border p-3 cursor-pointer w-full mt-5 rounded-xl border-white/20 text-sm">I am ready to earn rewards</button>
+                </div>
+            </dialog>
+
             <div className="md:flex items-center justify-between p-3 max-w-7xl mx-auto hidden">
                 <div className="flex items-center gap-3">
                     <img
@@ -133,72 +155,78 @@ const MainLayout = () => {
                     </div>
                 </div>
 
-                <div>
-                    {connected ? (
-                        <div className="tooltip tooltip-left" data-tip={publicKey?.toBase58()}>
-                            <button
-                                className="bg-[#750075] w-40 h-12 cursor-pointer hover:shadow-lg backdrop-blur-3xl shadow-pink-500/20 font-montserrat flex items-center gap-2 rounded-full p-5"
-                                onClick={() => {
-                                    disconnect();
-                                    values?.user?.setIsLoading(true);
-                                }}>
-                                <img
-                                    src={wallet?.adapter?.icon}
-                                    className="text-base size-6" />
-                                <div>
-                                    <p className="text-start font-monda font-medium">{wallet?.adapter?.name}</p>
-                                    <p className="text-start text-xs font-monda opacity-60 text-white">Disconnect</p>
-                                </div>
-                            </button>
-                        </div>
-                    ) : (
-                        <div>
-                            <button
-                                className="bg-[#750075] w-40 h-12 cursor-pointer hover:shadow-lg backdrop-blur-3xl shadow-pink-500/20 font-montserrat flex items-center gap-2 rounded-full p-5"
-                                onClick={() => {
-                                    (document.getElementById("all_wallet") as HTMLDialogElement).show();
-                                }}>
-                                <FaWallet className="text-base" />
-                                <div>
-                                    <p className="font-medium text-sm text-start line-clamp-1">Connect Wallet</p>
-                                    <p className="text-start text-xs text-white/60 line-clamp-1">Network: Sol</p>
-                                </div>
-                            </button>
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => (document.getElementById("earn_reward_modal") as HTMLDialogElement).showModal()}
+                        className="bg-white/10 cursor-pointer p-2 px-5 text-sm font-monda rounded-full">earn rewards</button>
 
-                            <dialog id="all_wallet" className="modal">
-                                <div className="modal-box">
-                                    <p className="text-2xl font-opensans font-bold">Connect wallet</p>
-                                    <p className="text-sm">Get start by connecting your preferred wallet below.</p>
-                                    <div style={{ marginTop: "10px" }}>
-                                        {wallets.map((wallet) => (
-                                            <div
-                                                key={wallet.adapter.name}
-                                                onClick={() => handleWalletClick(wallet.adapter.name)}
-                                                className="flex items-center gap-3 my-4 cursor-pointer hover:bg-white/10 p-3 rounded-2xl relative"
-                                            >
-                                                <img src={wallet?.adapter?.icon} alt={wallet.adapter.name} className="size-9 rounded-2xl" />
-                                                <div>
-                                                    <p className="font-medium">{wallet.adapter.name}</p>
-                                                    <p className="text-xs opacity-50">Transaction Versions: {wallet.adapter.supportedTransactionVersions}</p>
-                                                </div>
-                                                {
-                                                    wallet?.adapter?.name === "Phantom" &&
-                                                    <p className="text-xs absolute right-3 font-montserrat">Recommend</p>
-                                                }
-                                            </div>
-                                        ))}
+                    <div>
+                        {connected ? (
+                            <div className="tooltip tooltip-left" data-tip={publicKey?.toBase58()}>
+                                <button
+                                    className="bg-[#750075] w-40 h-12 cursor-pointer hover:shadow-lg backdrop-blur-3xl shadow-pink-500/20 font-montserrat flex items-center gap-2 rounded-full p-5"
+                                    onClick={() => {
+                                        disconnect();
+                                        values?.user?.setIsLoading(true);
+                                    }}>
+                                    <img
+                                        src={wallet?.adapter?.icon}
+                                        className="text-base size-6" />
+                                    <div>
+                                        <p className="text-start font-monda font-medium">{wallet?.adapter?.name}</p>
+                                        <p className="text-start text-xs font-monda opacity-60 text-white">Disconnect</p>
                                     </div>
+                                </button>
+                            </div>
+                        ) : (
+                            <div>
+                                <button
+                                    className="bg-[#750075] w-40 h-12 cursor-pointer hover:shadow-lg backdrop-blur-3xl shadow-pink-500/20 font-montserrat flex items-center gap-2 rounded-full p-5"
+                                    onClick={() => {
+                                        (document.getElementById("all_wallet") as HTMLDialogElement).show();
+                                    }}>
+                                    <FaWallet className="text-base" />
+                                    <div>
+                                        <p className="font-medium text-sm text-start line-clamp-1">Connect Wallet</p>
+                                        <p className="text-start text-xs text-white/60 line-clamp-1">Network: Sol</p>
+                                    </div>
+                                </button>
 
-                                    <p className="font-monda">By connecting your wallet, you're agree to our <span className="text-blue-400">Terms of service</span> and our <span className="text-blue-400">privacy policy</span></p>
-                                </div>
-                                <form method="dialog" className="modal-backdrop">
-                                    <button>close</button>
-                                </form>
-                            </dialog>
-                        </div>
-                    )
-                    }
-                </div >
+                                <dialog id="all_wallet" className="modal">
+                                    <div className="modal-box">
+                                        <p className="text-2xl font-opensans font-bold">Connect wallet</p>
+                                        <p className="text-sm">Get start by connecting your preferred wallet below.</p>
+                                        <div style={{ marginTop: "10px" }}>
+                                            {wallets.map((wallet) => (
+                                                <div
+                                                    key={wallet.adapter.name}
+                                                    onClick={() => handleWalletClick(wallet.adapter.name)}
+                                                    className="flex items-center gap-3 my-4 cursor-pointer hover:bg-white/10 p-3 rounded-2xl relative"
+                                                >
+                                                    <img src={wallet?.adapter?.icon} alt={wallet.adapter.name} className="size-9 rounded-2xl" />
+                                                    <div>
+                                                        <p className="font-medium">{wallet.adapter.name}</p>
+                                                        <p className="text-xs opacity-50">Transaction Versions: {wallet.adapter.supportedTransactionVersions}</p>
+                                                    </div>
+                                                    {
+                                                        wallet?.adapter?.name === "Phantom" &&
+                                                        <p className="text-xs absolute right-3 font-montserrat">Recommend</p>
+                                                    }
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <p className="font-monda">By connecting your wallet, you're agree to our <span className="text-blue-400">Terms of service</span> and our <span className="text-blue-400">privacy policy</span></p>
+                                    </div>
+                                    <form method="dialog" className="modal-backdrop">
+                                        <button>close</button>
+                                    </form>
+                                </dialog>
+                            </div>
+                        )
+                        }
+                    </div>
+                </div>
             </div>
 
             <div className="flex items-center justify-between p-3 max-w-7xl mx-auto border-b border-white/10 md:hidden">
@@ -210,11 +238,16 @@ const MainLayout = () => {
                         <div className="p-3 flex items-center w-fit flex-col gap-4 font-monda bg-white/5 rounded-md border border-white/5 backdrop-blur-sm">
                             {
                                 nav_item.map((nav) => (
-                                    <Link
-                                        className="hover:text-white text-white/40 duration-500"
-                                        key={nav?.id}
-                                        to={nav?.href}
-                                    >{nav?.name}</Link>
+                                    nav?.name === "Earn Rewards" ?
+                                        <button
+                                            onClick={() => (document.getElementById("earn_reward_modal") as HTMLDialogElement).showModal()}
+                                            className="bg-white/10 cursor-pointer p-2 px-5 text-sm font-monda rounded-full">earn rewards</button>
+                                        :
+                                        <Link
+                                            className="hover:text-white text-white/40 duration-500"
+                                            key={nav?.id}
+                                            to={nav?.href}
+                                        >{nav?.name}</Link>
                                 ))
                             }
                         </div>
@@ -299,7 +332,7 @@ const MainLayout = () => {
             </div>
 
             <div className="bg-[#7500758e] py-10">
-                <div className="max-w-7xl mx-auto p-3 lg:p-0">
+                {/* <div className="max-w-7xl mx-auto p-3 lg:p-0">
                     <div className="flex items-center justify-between md:flex-row flex-col">
                         <div className="flex-1">
                             <img src={icon} alt="why buy" className="size-12" />
@@ -356,7 +389,24 @@ const MainLayout = () => {
                             </div>
                         </div>
                     </div>
+                </div> */}
+                <div className="flex items-center justify-between flex-col gap-5 max-w-7xl mx-auto">
+                    <div className="flex items-center gap-1 ">
+                        <FaXTwitter className="lg:text-2xl" />
+                        <p className="font-monda lg:text-base font-medium">Follow on X</p>
+                    </div>
+                    <div className="flex items-center gap-5">
+                        <Link to={"/terms"} className="text-sm font-monda">Terms</Link>
+                        <Link to={"/privacy"} className="text-sm font-monda">Privacy</Link>
+                        <Link to={"/"} className="text-sm font-monda">Home</Link>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <p className="font-montserrat lg:text-base font-medium">Join Telegram</p>
+                        <FaTelegramPlane className="lg:text-3xl" />
+                    </div>
                 </div>
+                <div className="lg:w-96 h-[1px] bg-white/20 rounded-full my-3 mx-auto"></div>
+                <p className="text-xs text-center">2025 © whybuy All Rights Reserved.</p>
             </div>
         </div>
     );

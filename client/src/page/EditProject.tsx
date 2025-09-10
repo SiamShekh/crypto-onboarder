@@ -73,7 +73,7 @@ const EditProject = () => {
     }, [deleteTaskMutation[1]?.status])
 
     return (
-        <div className="py-5">
+        <div className="py-5 lg:px-0 px-3">
             {
                 isFetching &&
                 <div className="fixed w-full flex items-center justify-center">
@@ -322,7 +322,10 @@ const NewTaskModal = ({ projectId }: { projectId: number }) => {
 
                         }
                         <button type="submit" className="bg-white text-black font-medium p-3 rounded-full">Add Task</button>
-                        <button type="submit" className="bg-white text-black font-medium p-3 rounded-full">Add Task</button>
+                        <button
+                            onClick={() => (document.getElementById("new_task") as HTMLDialogElement).close()}
+                            className="text-sm"
+                            type="button">No thanks</button>
                     </form>
                 </FormProvider>
             </div>
