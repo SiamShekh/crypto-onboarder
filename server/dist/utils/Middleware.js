@@ -21,41 +21,49 @@ exports.UserVaildation = (0, Utilite_1.CatchAsync)((req, res, next) => __awaiter
     if (!token) {
         throw new Error("token not found");
     }
-    jsonwebtoken_1.default.verify(token, process.env.SECRET, (err, decode) => __awaiter(void 0, void 0, void 0, function* () {
-        if (err)
-            next(err);
-        const user = yield __1.prisma.user.findUniqueOrThrow({
-            where: {
-                id: decode === null || decode === void 0 ? void 0 : decode.id
-            }
-        });
-        req.user = {
-            id: user === null || user === void 0 ? void 0 : user.id,
-            address: user.solAddress
-        };
-        if (user)
-            next();
-    }));
+    const decode = yield jsonwebtoken_1.default.verify(token, process.env.SECRET);
+    const userDecode = decode;
+    if (!userDecode) {
+        throw new Error("Jwt not found");
+    }
+    const user = yield __1.prisma.user.findFirst({
+        where: {
+            id: userDecode.id
+        }
+    });
+    if (!user) {
+        throw new Error("User not found");
+    }
+    req.user = {
+        id: user === null || user === void 0 ? void 0 : user.id,
+        address: user.solAddress
+    };
+    if (user)
+        next();
 }));
 exports.AdminVaildation = (0, Utilite_1.CatchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req === null || req === void 0 ? void 0 : req.cookies.token;
     if (!token) {
-        throw new Error("token not found");
+        throw new Error("Token not found");
     }
-    jsonwebtoken_1.default.verify(token, process.env.SECRET, (err, decode) => __awaiter(void 0, void 0, void 0, function* () {
-        if (err)
-            next(err);
-        const admin = yield __1.prisma.admins.findUniqueOrThrow({
-            where: {
-                id: decode === null || decode === void 0 ? void 0 : decode.id
-            }
-        });
-        req.admin = {
-            id: admin === null || admin === void 0 ? void 0 : admin.id,
-            email: admin.email,
-            password: admin.password
-        };
-        if (admin)
-            next();
-    }));
+    const decode = yield jsonwebtoken_1.default.verify(token, process.env.SECRET);
+    if (!decode) {
+        throw new Error("Payload user not found");
+    }
+    const decodeUser = decode;
+    if (!(decodeUser === null || decodeUser === void 0 ? void 0 : decodeUser.id) || !(decodeUser === null || decodeUser === void 0 ? void 0 : decodeUser.email) || !(decodeUser === null || decodeUser === void 0 ? void 0 : decodeUser.password)) {
+        throw new Error("Payload not contain enough data");
+    }
+    const admin = yield __1.prisma.admins.findUniqueOrThrow({
+        where: {
+            id: decodeUser === null || decodeUser === void 0 ? void 0 : decodeUser.id
+        }
+    });
+    req.admin = {
+        id: admin === null || admin === void 0 ? void 0 : admin.id,
+        email: admin.email,
+        password: admin.password
+    };
+    if (admin)
+        next();
 }));

@@ -8,21 +8,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
 const Utilite_1 = require("../utils/Utilite");
+const unique_slug_1 = __importDefault(require("unique-slug"));
+const slugify_1 = __importDefault(require("slugify"));
+const http_status_codes_1 = require("http-status-codes");
 const addProject = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
     const result = yield __1.prisma.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
+        const randomSlug = (0, unique_slug_1.default)();
+        const slug = (0, slugify_1.default)(body === null || body === void 0 ? void 0 : body.name, { lower: true, trim: true });
+        const hyperLink = `${slug}-${randomSlug}`;
         const project = yield transactionClient.project.create({
             data: {
                 name: body === null || body === void 0 ? void 0 : body.name,
-                tagline: body === null || body === void 0 ? void 0 : body.tagline,
+                launchDate: new Date(body === null || body === void 0 ? void 0 : body.launchDate),
                 image: body === null || body === void 0 ? void 0 : body.logo_image,
+                description: body === null || body === void 0 ? void 0 : body.description,
                 reward: body === null || body === void 0 ? void 0 : body.reward,
-                task: body === null || body === void 0 ? void 0 : body.task,
-                userId: (_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id
+                userId: (_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id,
+                slug: hyperLink
             }
         });
         return project;
@@ -33,19 +43,15 @@ const addProject = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, voi
     });
 }));
 const getProjects = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { page, search } = req.query;
-    const projects = yield __1.prisma.project.findMany(Object.assign(Object.assign({ where: Object.assign(Object.assign({}, (search && {
+    const { page, search, verified } = req.query;
+    const projects = yield __1.prisma.project.findMany(Object.assign({ where: Object.assign(Object.assign(Object.assign({}, (search && {
             name: {
                 contains: String(search),
                 mode: "insensitive"
             }
-        })), { isDelete: false }), take: 20 }, (page && { skip: Number(page) * 20 })), { select: {
-            id: true,
-            image: true,
-            name: true,
-            tagline: true,
-            reward: true,
-        } }));
+        })), { isDelete: false }), ((Boolean(verified) === true) && {
+            isVerified: true
+        })), take: 20 }, (page && { skip: Number(page) * 20 })));
     res.status(200).json(projects);
 }));
 const getMyProjects = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -55,24 +61,24 @@ const getMyProjects = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, 
             userId: (_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id,
             isDelete: false
         },
-        select: {
-            id: true,
-            image: true,
-            name: true,
-            tagline: true,
-            reward: true,
-        }
+        // select: {
+        //     id: true,
+        //     image: true,
+        //     name: true,
+        //     launchDate: true,
+        //     reward: true,
+        // }
     });
     res.status(200).json(projects);
 }));
 const getSpacificProject = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.query;
-    if (!id) {
+    const { slug } = req.query;
+    if (!slug) {
         throw new Error("Project id is required");
     }
     const project = yield __1.prisma.project.findUniqueOrThrow({
         where: {
-            id: Number(id)
+            slug: slug
         },
         include: {
             ProjectReferrel: {
@@ -83,15 +89,17 @@ const getSpacificProject = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(voi
                                 select: {
                                     ProjectReferrel: {
                                         where: {
-                                            projectId: Number(id)
+                                            slug: slug
                                         }
                                     },
                                 },
                             },
                         },
                     }
-                }
-            }
+                },
+                take: 5
+            },
+            task: true
         }
     });
     res.status(200).json(project);
@@ -138,8 +146,8 @@ const softDeleteProject = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void
 }));
 const referrelIp = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
-    if (!(body === null || body === void 0 ? void 0 : body.projectId)) {
-        throw new Error("Project id is required");
+    if (!(body === null || body === void 0 ? void 0 : body.slug)) {
+        throw new Error("Slug is required");
     }
     if (!(body === null || body === void 0 ? void 0 : body.address)) {
         throw new Error("Address is required");
@@ -155,7 +163,7 @@ const referrelIp = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, voi
         }
         const project = yield transactionClient.project.findUniqueOrThrow({
             where: {
-                id: body === null || body === void 0 ? void 0 : body.projectId
+                slug: body === null || body === void 0 ? void 0 : body.slug
             }
         });
         if (!project) {
@@ -163,10 +171,10 @@ const referrelIp = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, voi
         }
         const request = yield fetch(`https://ipinfo.io/?token=c79e99d0e5c9f5`);
         const requestJson = yield request.json();
-        const referrel = yield __1.prisma.projectReferrel.create({
+        const referrel = yield transactionClient.projectReferrel.create({
             data: {
                 userId: user === null || user === void 0 ? void 0 : user.id,
-                projectId: project === null || project === void 0 ? void 0 : project.id,
+                slug: project === null || project === void 0 ? void 0 : project.slug,
                 visitorIp: requestJson === null || requestJson === void 0 ? void 0 : requestJson.ip,
             }
         });
@@ -187,8 +195,9 @@ const getAdminProjects = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 
             id: true,
             image: true,
             name: true,
-            tagline: true,
+            launchDate: true,
             reward: true,
+            isVerified: true,
             task: true,
             _count: {
                 select: {
@@ -244,6 +253,44 @@ const undoProject = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, vo
     }));
     res.status(200).json(result);
 }));
+const getProjectBySlugId = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { slug } = req.query;
+    if (!slug) {
+        throw new Error("Slug is required");
+    }
+    const project = yield __1.prisma.project.findFirst({
+        where: {
+            slug: slug
+        },
+        include: {
+            task: true
+        }
+    });
+    res.status(200).json(project);
+}));
+const verifyProject = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.body;
+    if (!id) {
+        throw new Error("Id is required");
+    }
+    const result = yield __1.prisma.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
+        const project = yield transactionClient.project.findUniqueOrThrow({
+            where: {
+                id: id
+            }
+        });
+        const verifyProject = yield __1.prisma.project.update({
+            where: {
+                id: id
+            },
+            data: {
+                isVerified: (project === null || project === void 0 ? void 0 : project.isVerified) ? false : true
+            }
+        });
+        return verifyProject;
+    }));
+    res.status(http_status_codes_1.StatusCodes.OK).json(result);
+}));
 const project = {
     addProject,
     getProjects,
@@ -254,6 +301,8 @@ const project = {
     referrelIp,
     getAdminProjects,
     deleteProject,
-    undoProject
+    undoProject,
+    getProjectBySlugId,
+    verifyProject
 };
 exports.default = project;
