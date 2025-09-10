@@ -145,11 +145,12 @@ const MainLayout = () => {
                     <div className="p-3 px-8 flex items-center gap-8 font-monda bg-white/5 rounded-full border border-white/5 backdrop-blur-sm">
                         {
                             nav_item.map((nav) => (
-                                <Link
-                                    className="hover:text-white text-white/40 duration-500"
-                                    key={nav?.id}
-                                    to={nav?.href}
-                                >{nav?.name}</Link>
+                                nav?.name !== "Earn Rewards" &&
+                                    <Link
+                                        className="hover:text-white text-white/40 duration-500"
+                                        key={nav?.id}
+                                        to={nav?.href}
+                                    >{nav?.name}</Link>
                             ))
                         }
                     </div>
