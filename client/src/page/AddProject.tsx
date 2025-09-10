@@ -5,10 +5,11 @@ import UploadImage from "../utils/UploadImage";
 import project from "../api/Project";
 import { QueryStatus } from "@reduxjs/toolkit/query";
 import InputField from "../components/item/InputField";
+import { RTKErrorTypes } from "..";
 
 const AddProject = () => {
     const method = useForm();
-    const [addProject, { status, data: projectData }] = project.NewProject();
+    const [addProject, { status, data: projectData, error: errorProject }] = project.NewProject();
     const [isLoading, setIsLoading] = useState(false);
 
     const onSubmit = method.handleSubmit((data) => {
@@ -45,6 +46,7 @@ const AddProject = () => {
         switch (status) {
             case QueryStatus.fulfilled:
                 setIsLoading(false);
+
                 if (projectData?.status === "success") {
                     toast.success("Project added successfully");
                     method.reset();
@@ -54,7 +56,7 @@ const AddProject = () => {
                 break;
 
             case QueryStatus.rejected:
-                toast.error("Failed to add project");
+                toast.error((errorProject as RTKErrorTypes)?.data?.msg || "Failed to add project");
                 setIsLoading(false);
                 break;
 
@@ -62,10 +64,7 @@ const AddProject = () => {
                 setIsLoading(true);
                 break;
         }
-    }, [status, method.reset])
-
-    console.log(method.watch("checkbox"));
-    
+    }, [status, method.reset, errorProject, method, projectData])
 
     return (
         <div className="p-3">
