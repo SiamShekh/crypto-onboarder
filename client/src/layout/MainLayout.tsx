@@ -86,8 +86,32 @@ const MainLayout = () => {
     const securePath = ["/add-project", "/profile"];
     const { pathname } = useLocation();
 
+    useEffect(() => {
+        if (sessionStorage.getItem("welcome") !== "yes") {
+            (document.getElementById('welcome_modal') as HTMLDialogElement).showModal();
+        }
+    }, [])
+
     return (
         <div data-theme="night" className="min-h-screen w-full">
+
+            <dialog id="welcome_modal" className="modal backdrop-blur-xs">
+                <div className="modal-box border border-white/10 font-montserrat">
+                    <p className="text-center font-monda text-xl">How it works</p>
+                    <p className="text-center text-xs mt-2 opacity-60">One platform to explore every upcoming memecoin before it goes live on any launchpad.</p>
+                    <p className="text-xs text-center mt-5 opacity-50"><strong>Step:1</strong> Discover upcoming memecoins before launch</p>
+                    <p className="text-xs text-center my-2 opacity-50"><strong>Step:2</strong> Check socials and complete task to get rewards</p>
+                    <p className="text-xs text-center opacity-50"><strong>Step:3</strong> Ape into the next potential 100x early</p>
+                    <p className="text-xs text-center mt-4 opacity-70">by clicking this button you agree to the terms and conditions and certify that you are over 18 years old</p>
+
+                    <button
+                        onClick={() => {
+                            (document.getElementById('welcome_modal') as HTMLDialogElement).close();
+                            sessionStorage.setItem("welcome", "yes");
+                        }}
+                        className="text-[#c1ff72] text-center border p-3 cursor-pointer w-full mt-5 rounded-xl border-white/20 text-sm">I am ready to find next 100x</button>
+                </div>
+            </dialog>
 
             <div className="md:flex items-center justify-between p-3 max-w-7xl mx-auto hidden">
                 <div className="flex items-center gap-3">
