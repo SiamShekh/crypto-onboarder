@@ -6,6 +6,7 @@ import project from "../api/Project";
 import { QueryStatus } from "@reduxjs/toolkit/query";
 import InputField from "../components/item/InputField";
 import { RTKErrorTypes } from "..";
+import { Link } from "react-router-dom";
 
 const AddProject = () => {
     const method = useForm();
@@ -124,12 +125,8 @@ const AddProject = () => {
                                 placeholder="Write a brief about your project"
                                 {...method.register("description", {
                                     maxLength: {
-                                        value: 500,
-                                        message: `Maximum 500 characters allowed.`
-                                    },
-                                    minLength: {
-                                        value: 50,
-                                        message: `Minimum 50 characters required.`
+                                        value: 200,
+                                        message: `Maximum 200 characters allowed.`
                                     },
                                     required: {
                                         message: `Description is required`,
@@ -145,7 +142,7 @@ const AddProject = () => {
 
                         <div className="flex items-center gap-2 col-span-full">
                             <input type="checkbox" {...method.register("checkbox")} required className="checkbox" />
-                            <p>I have read and agreed to the terms of use</p>
+                            <p>I have read and agreed to the <Link to={"/terms"} className="font-medium underline">terms of use</Link></p>
                         </div>
                     </div>
 

@@ -332,7 +332,7 @@ const MainLayout = () => {
                 }
             </div>
 
-            <div className="bg-[#7500758e] py-10">
+            <div className="border-t border-white/10 py-10">
                 {/* <div className="max-w-7xl mx-auto p-3 lg:p-0">
                     <div className="flex items-center justify-between md:flex-row flex-col">
                         <div className="flex-1">
@@ -391,20 +391,20 @@ const MainLayout = () => {
                         </div>
                     </div>
                 </div> */}
-                <div className="flex items-center justify-between flex-col gap-5 max-w-7xl mx-auto">
-                    <div className="flex items-center gap-1 ">
+                <div className="flex items-center justify-between lg:flex-row flex-col gap-5 max-w-7xl mx-auto">
+                    <Link to={"https://x.com/whybuydotfun"} className="flex items-center gap-1 ">
                         <FaXTwitter className="lg:text-2xl" />
                         <p className="font-monda lg:text-base font-medium">Follow on X</p>
-                    </div>
+                    </Link>
                     <div className="flex items-center gap-5">
                         <Link to={"/terms"} className="text-sm font-monda">Terms</Link>
                         <Link to={"/privacy"} className="text-sm font-monda">Privacy</Link>
                         <Link to={"/"} className="text-sm font-monda">Home</Link>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <Link to={"https://t.me/whybuydotfun"} className="flex items-center gap-3">
                         <p className="font-montserrat lg:text-base font-medium">Join Telegram</p>
                         <FaTelegramPlane className="lg:text-3xl" />
-                    </div>
+                    </Link>
                 </div>
                 <div className="lg:w-96 h-[1px] bg-white/20 rounded-full my-3 mx-auto"></div>
                 <p className="text-xs text-center">2025 © whybuy All Rights Reserved.</p>
