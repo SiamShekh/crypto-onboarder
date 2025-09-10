@@ -93,7 +93,7 @@ const Explore = () => {
                                     <div className="flex items-center justify-between mb-5">
                                         <div className="flex items-center gap-3">
                                             <div className="size-12 relative">
-                                                <img src={item?.image} alt={item?.name} className="size-12 object-contain bg-white/10 rounded-full" />
+                                                <img src={item?.image} loading="lazy" alt={item?.name} className="size-12 object-contain bg-white/10 rounded-full" />
                                                 {
                                                     item?.isVerified &&
                                                     <div className="size-4 bg-green-500/40 backdrop-blur-lg rounded-full absolute right-0 bottom-0"></div>
