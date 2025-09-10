@@ -93,6 +93,16 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
             }),
             invalidatesTags: ["project"]
         }),
+        VerifyProjectAdmin: builder.mutation({
+            query: ({ id }: {
+                id: number
+            }) => ({
+                url: `/project/verify`,
+                method: "PATCH",
+                body: { id }
+            }),
+            invalidatesTags: ["project"]
+        }),
         getProjectBySlug: builder.query({
             query: ({ slug }: { slug: string }) => ({
                 url: "/project/slug",
@@ -130,7 +140,8 @@ const project = {
     getProjectBySlug:{
         use: ProjectEndpoint.useGetProjectBySlugQuery,
         lazy: ProjectEndpoint.useLazyGetProjectBySlugQuery
-    }
+    },
+    VerifyProjectAdmin: ProjectEndpoint.useVerifyProjectAdminMutation
 }
 
 export default project;

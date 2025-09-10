@@ -3,23 +3,13 @@ import project from "../../api/Project";
 import { useEffect } from "react";
 import { QueryStatus } from "@reduxjs/toolkit/query";
 import { toast } from "sonner";
-
-interface ProjectType {
-    id: number
-    image: string
-    name: string
-    tagline: string
-    reward: string
-    task: string[]
-    _count: {
-        ProjectReferrel: number
-    }
-}
+import { RTKErrorTypes, Project as TProject } from "../..";
 
 const Project = () => {
     const { setValue, watch } = useForm();
-    const deleteAdminProject = project.DeleteAdminProject();
-    const UndoAdminProject = project.UndoAdminProject();
+    const [deleteProject, { status: deleteProjectStatus, isLoading: deleteIsLoading, error: deleteProjectError, data: deleteProjectData }] = project.DeleteAdminProject();
+    const [undoProject, { status: undoStatus, isLoading: undoIsLoading, error: projectUndoError, data: projectUndoData }] = project.UndoAdminProject();
+    const [verifyProject, { status: verifyProjectStatus, isLoading: verifyProjectLoading, data: verifyProjectData, error: verifyProjectError }] = project.VerifyProjectAdmin();
 
     const exploreData = project.getAdminProjects.use({
         search: watch("search") || "",
@@ -28,28 +18,52 @@ const Project = () => {
     });
 
     useEffect(() => {
-        switch (deleteAdminProject[1]?.status) {
+        switch (deleteProjectStatus) {
             case QueryStatus.fulfilled:
-                toast.success("Project deleted");
+                if (deleteProjectData?.isDelete) {
+                    toast.success("The project was deleted successfully.");
+                } else {
+                    toast.error("Failed to delete the project.")
+                }
                 break;
 
             case QueryStatus.rejected:
-                toast.error("Something went wrong");
+                toast.error((deleteProjectError as RTKErrorTypes)?.data?.msg || "Something went wrong");
                 break;
         }
-    }, [deleteAdminProject[1]?.status]);
+    }, [deleteProjectStatus, deleteProjectData?.isDelete, deleteProjectError]);
 
     useEffect(() => {
-        switch (UndoAdminProject[1]?.status) {
+        switch (undoStatus) {
             case QueryStatus.fulfilled:
-                toast.success("Project Undo Successfully");
+                if (!projectUndoData?.isDelete) {
+                    toast.success("Project undone successfully.");
+                } else {
+                    toast.error("Failed to undo the project.");
+                }
                 break;
 
             case QueryStatus.rejected:
-                toast.error("Something went wrong");
+                toast.error((projectUndoError as RTKErrorTypes)?.data?.msg ?? "An unexpected error occurred while undoing the project.");
                 break;
         }
-    }, [UndoAdminProject[1]?.status]);
+    }, [undoStatus, projectUndoData?.isDelete, projectUndoError]);
+
+    useEffect(() => {
+        switch (verifyProjectStatus) {
+            case QueryStatus.fulfilled:
+                if (verifyProjectData?.isVerified) {
+                    toast.success("The project was successfully verified.");
+                } else {
+                    toast.success("The verification tag has been removed.");
+                }
+                break;
+
+            case QueryStatus.rejected:
+                toast.error((verifyProjectError as RTKErrorTypes)?.data?.msg || "Something went wrong.");
+                break;
+        }
+    }, [verifyProjectStatus, verifyProjectData?.isVerified, verifyProjectError]);
 
     return (
         <div className="max-w-7xl mx-auto p-3">
@@ -84,8 +98,9 @@ const Project = () => {
                         <tr className="text-center font-montserrat">
                             <th>#</th>
                             <th>Name</th>
-                            <th>Tagline</th>
+                            <th>Launch Date</th>
                             <th>Reward</th>
+                            <th>Verify</th>
                             <th>Task</th>
                             <th>Visitor</th>
                             <th>Action</th>
@@ -104,32 +119,44 @@ const Project = () => {
 
                                 :
 
-                                exploreData?.data?.map((project: ProjectType, key: number) => (
+                                exploreData?.data?.map((project: TProject, key: number) => (
                                     <tr key={key} className="text-center font-opensans">
                                         <th>{key + 1}</th>
                                         <td>{project?.name}</td>
-                                        <td>{project?.tagline}</td>
-                                        <td>{project?.reward}</td>
+                                        <td>{project?.launchDate ? new Date(project?.launchDate).toLocaleString() : "N/A"}</td>
+                                        <td>{project?.reward ? project?.reward : "N/A"}</td>
+                                        <td>
+                                            <input
+                                                onChange={(e) => {
+                                                    const checkbox = e?.target.checked;
+                                                    verifyProject({ id: project?.id })
+                                                    console.log(checkbox);
+
+                                                }}
+                                                type="checkbox"
+                                                defaultChecked={project?.isVerified}
+                                                className="toggle" />
+                                        </td>
                                         <td>{project?.task?.length}</td>
                                         <td>{project?._count?.ProjectReferrel}</td>
                                         <td>
                                             {
-                                                deleteAdminProject[1]?.isLoading ||  UndoAdminProject[1]?.isLoading ?
+                                                undoIsLoading || deleteIsLoading || verifyProjectLoading ?
                                                     <div className="px-5 bg-white/5 w-fit p-1 rounded-md mx-auto ">
                                                         <span className="loading loading-spinner loading-xs"></span>
                                                     </div> :
                                                     watch("status", "active") === "active" ?
                                                         <div
                                                             onClick={() => {
-                                                                if (!deleteAdminProject[1]?.isLoading) {
-                                                                    deleteAdminProject[0]({ id: project?.id })
+                                                                if (!deleteIsLoading) {
+                                                                    deleteProject({ id: project?.id })
                                                                 }
                                                             }}
                                                             className="font-monda cursor-pointer text-xs bg-white/5 w-fit p-1 rounded-md mx-auto">Delete</div> :
                                                         <div
                                                             onClick={() => {
-                                                                if (!UndoAdminProject[1]?.isLoading) {
-                                                                    UndoAdminProject[0]({ id: project?.id })
+                                                                if (!undoIsLoading) {
+                                                                    undoProject({ id: project?.id })
                                                                 }
                                                             }}
                                                             className="font-monda cursor-pointer text-xs bg-white/5 w-fit p-1 rounded-md mx-auto">Undo</div>

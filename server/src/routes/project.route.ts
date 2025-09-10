@@ -15,6 +15,7 @@ ProjectRoute.post("/traffic", project.referrelIp);
 ProjectRoute.get("/admin", AdminVaildation, project.getAdminProjects);
 ProjectRoute.patch("/admin", AdminVaildation, project.deleteProject);
 ProjectRoute.patch("/undo", AdminVaildation, project.undoProject);
+ProjectRoute.patch("/verify", AdminVaildation, project.verifyProject);
 
  
 export default ProjectRoute;

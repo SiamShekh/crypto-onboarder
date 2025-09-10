@@ -83,6 +83,7 @@ model project {
   isDelete        Boolean           @default(false) // Soft delete flag:: user can delete project from his profile
   createdAt       DateTime          @default(now()) // Timestamp when the project was created
   updatedAt       DateTime          @updatedAt // Timestamp when the project was last updated
+  isVerified      Boolean           @default(false)
   ProjectReferrel ProjectReferrel[]
   task            task[]
 }

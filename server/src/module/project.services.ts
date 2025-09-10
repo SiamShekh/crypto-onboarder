@@ -2,6 +2,7 @@ import { prisma } from "..";
 import { CatchAsync } from "../utils/Utilite";
 import uniqueSlug from "unique-slug";
 import slugify from "slugify";
+import { StatusCodes } from "http-status-codes";
 
 const addProject = CatchAsync(async (req, res) => {
     const body = req.body;
@@ -229,6 +230,7 @@ const getAdminProjects = CatchAsync(async (req, res) => {
             name: true,
             launchDate: true,
             reward: true,
+            isVerified: true,
             task: true,
             _count: {
                 select: {
@@ -300,8 +302,8 @@ const undoProject = CatchAsync(async (req, res) => {
 });
 
 const getProjectBySlugId = CatchAsync(async (req, res) => {
-    const {slug} = req.query;
-    
+    const { slug } = req.query;
+
     if (!slug) {
         throw new Error("Slug is required");
     }
@@ -316,7 +318,37 @@ const getProjectBySlugId = CatchAsync(async (req, res) => {
     });
 
     res.status(200).json(project);
-})
+});
+
+const verifyProject = CatchAsync(async (req, res) => {
+    const { id } = req.body;
+
+    if (!id) {
+        throw new Error("Id is required");
+    }   
+
+    const result = await prisma.$transaction(async (transactionClient) => {
+        const project = await transactionClient.project.findUniqueOrThrow({
+            where: {
+                id: id
+            }
+        });
+
+        const verifyProject = await prisma.project.update({
+            where: {
+                id: id
+            },
+            data: {
+                isVerified: project?.isVerified ? false : true
+            }
+        });
+
+        return verifyProject;
+    })
+
+
+    res.status(StatusCodes.OK).json(result);
+});
 
 const project = {
     addProject,
@@ -329,7 +361,8 @@ const project = {
     getAdminProjects,
     deleteProject,
     undoProject,
-    getProjectBySlugId
+    getProjectBySlugId,
+    verifyProject
 }
 
 export default project;

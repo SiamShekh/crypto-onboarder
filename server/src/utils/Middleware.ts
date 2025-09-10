@@ -12,7 +12,7 @@ export const UserVaildation: RequestHandler = CatchAsync(async (req, res, next) 
 
     const decode = await jwt.verify(token, process.env.SECRET as string);
     const userDecode = decode as { id: number, address: string };
-    
+
     if (!userDecode) {
         throw new Error("Jwt not found");
     }
@@ -39,24 +39,30 @@ export const AdminVaildation: RequestHandler = CatchAsync(async (req, res, next)
     const token = req?.cookies.token;
 
     if (!token) {
-        throw new Error("token not found");
+        throw new Error("Token not found");
     }
 
-    jwt.verify(token, process.env.SECRET as string, async (err: any, decode: any) => {
-        if (err) next(err);
+    const decode = await jwt.verify(token, process.env.SECRET as string);
+    if (!decode) {
+        throw new Error("Payload user not found");
+    }
 
-        const admin = await prisma.admins.findUniqueOrThrow({
-            where: {
-                id: decode?.id
-            }
-        });
+    const decodeUser = decode as { id: number, email: string, password: string };
+    if (!decodeUser?.id || !decodeUser?.email || !decodeUser?.password) {
+        throw new Error("Payload not contain enough data");
+    }
 
-        req.admin = {
-            id: admin?.id,
-            email: admin.email,
-            password: admin.password
+    const admin = await prisma.admins.findUniqueOrThrow({
+        where: {
+            id: decodeUser?.id
         }
+    });
 
-        if (admin) next();
-    })
+    req.admin = {
+        id: admin?.id,
+        email: admin.email,
+        password: admin.password
+    }
+
+    if (admin) next();
 });

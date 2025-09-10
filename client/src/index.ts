@@ -8,8 +8,13 @@ export interface Project {
   reward: string
   slug: string
   isDelete: boolean
+  isVerified: boolean
   createdAt: string
   updatedAt: string
+  task: Task[]
+  _count: {
+    ProjectReferrel: number
+  }
 }
 
 
@@ -49,4 +54,11 @@ export interface Task {
   taskImg: string
   taskHref: string
   createdAt: string
+}
+
+export interface RTKErrorTypes {
+  data: {
+    msg: string
+    code: number
+  }
 }
