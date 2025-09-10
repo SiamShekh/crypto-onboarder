@@ -51,6 +51,9 @@ const getProjects = CatchAsync(async (req, res) => {
         },
         take: 20,
         ...(page && { skip: Number(page) * 20 }),
+        orderBy: {
+            createdAt: "desc"
+        }
     })
 
     res.status(200).json(projects);
@@ -62,6 +65,9 @@ const getMyProjects = CatchAsync(async (req, res) => {
             userId: req?.user?.id,
             isDelete: false
         },
+        orderBy:{
+            createdAt: "desc"
+        }
         // select: {
         //     id: true,
         //     image: true,

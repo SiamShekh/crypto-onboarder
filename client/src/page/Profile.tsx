@@ -160,12 +160,12 @@ const ProjectCard = ({ item }: { item: Project }) => {
                         <img src={item?.image} alt={item?.name} className=" object-contain" />
                         {
                             item?.isVerified &&
-                            <div className="size-3 rounded-full bg-green-500/50 absolute right-0 bottom-0"></div>
+                            <div className="size-3 rounded-full bg-green-500 absolute right-0 bottom-0"></div>
                         }
                     </div>
                     <div>
                         <p className="font-monda text-xl line-clamp-1 capitalize">{item?.name}</p>
-                        <p className="font-montserrat text-xs line-clamp-1 opacity-60">{new Date(item?.launchDate).toLocaleDateString()} - <a className="text-xs font-medium text-white" href={`/detail/${item?.id}`}>Details</a></p>
+                        <p className="font-montserrat text-xs line-clamp-1 opacity-60">{new Date(item?.launchDate).toLocaleDateString("en-GB")} - <a className="text-xs font-medium text-white" href={`/detail/${item?.slug}`}>Details</a></p>
                     </div>
                 </div>
                 <Link to={`/edit-project/${item?.slug}`} className="font-montserrat text-sm font-medium bg-white/10 p-1 px-4 rounded-md cursor-pointer">Edit</Link>

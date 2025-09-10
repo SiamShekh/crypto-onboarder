@@ -96,14 +96,14 @@ const Explore = () => {
                                                 <img src={item?.image} loading="lazy" alt={item?.name} className="size-12 object-contain bg-white/10 rounded-full" />
                                                 {
                                                     item?.isVerified &&
-                                                    <div className="size-4 bg-green-500/40 backdrop-blur-lg rounded-full absolute right-0 bottom-0"></div>
+                                                    <div className="size-4 bg-green-500 backdrop-blur-lg rounded-full absolute right-0 bottom-0"></div>
                                                 }
                                             </div>
                                             <div>
                                                 <p className="font-monda text-xl line-clamp-1 capitalize">{item?.name}</p>
                                                 {
                                                     item?.launchDate ?
-                                                        <p className="font-montserrat text-xs line-clamp-1 opacity-60">Launch at: {new Date(item?.launchDate)?.toLocaleDateString()}</p> :
+                                                        <p className="font-montserrat text-xs line-clamp-1 opacity-60">Launch at: {new Date(item?.launchDate)?.toLocaleDateString("en-GB")}</p> :
                                                         <p className="font-montserrat text-xs line-clamp-1 opacity-60">Reward: {item?.reward}</p>
                                                 }
                                             </div>
@@ -112,7 +112,9 @@ const Explore = () => {
                                             <button className="font-montserrat text-sm font-medium bg-white/10 p-1 px-4 rounded-md cursor-pointer">Details</button>
                                         </a>
                                     </div>
-                                    <p className="font-montserrat bg-white/10 text-xs p-3 rounded-md line-clamp-3">{item?.description}</p>
+                                    <div className="font-montserrat bg-white/10 text-xs p-3 rounded-md">
+                                        <p className="line-clamp-3">{item?.description}</p>
+                                    </div>
                                 </div>
                             ))
                 }

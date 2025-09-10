@@ -10,7 +10,7 @@ const ProjectDetails = () => {
     const param = useParams();
     const values = useContext(ContextValues);
     const referralLink = `${DETAILS_PAGE}${param?.slug}?startweb=${values?.user?.data?.solAddress}`;
-    const { data, isFetching } = project.getSpecificProject.use({ slug: param?.slug as string });
+    const { data, isFetching, isError } = project.getSpecificProject.use({ slug: param?.slug as string });
     const traffic = project.projectTraffic();
     const solAddress = useSearchParams()[0].get("startweb");
 
@@ -21,7 +21,15 @@ const ProjectDetails = () => {
                 address: solAddress,
             });
         }
-    }, [param?.slug, solAddress, traffic])
+    }, [param?.slug, solAddress, traffic]);
+
+    if (isError) {
+        return (
+            <div className="font-monda h-screen flex items-center justify-center">
+                <p>No info found</p>
+            </div>
+        )
+    }
 
     return (
         <div className="max-w-7xl mx-auto my-10">
@@ -47,16 +55,16 @@ const ProjectDetails = () => {
                                         <img src={data?.image} alt={data?.name} className="object-contain" />
                                         {
                                             data?.isVerified &&
-                                            <div className="size-4 bg-green-500/50 backdrop-blur-md rounded-full absolute right-0 bottom-0"></div>
+                                            <div className="size-4 bg-green-500 backdrop-blur-md rounded-full absolute right-0 bottom-0"></div>
                                         }
                                     </div>
                                     <div>
                                         <p className="font-monda text-xl">{data?.name}</p>
                                         {
                                             data?.launchDate ?
-                                                <p className="text-xs font-montserrat text-white/50 line-clamp-1">Launch Date: {new Date(data?.launchDate).toLocaleString()}</p> :
+                                                <p className="text-xs font-montserrat text-white/50 line-clamp-1">Launch Date: {new Date(data?.launchDate).toLocaleDateString("en-GB")}</p> :
                                                 data?.reward &&
-                                                <p className="text-xs font-montserrat text-white/50 line-clamp-1">Launch Date: {new Date(data?.launchDate).toLocaleString()}</p>
+                                                <p className="text-xs font-montserrat text-white/50 line-clamp-1">Reward: {data?.reward}</p>
                                         }
                                     </div>
                                 </div>
