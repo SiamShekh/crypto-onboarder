@@ -4,7 +4,6 @@ import cors from "cors";
 import Utility from "./utils/Utilite";
 import MainRoute from "./routes/main.route";
 import cookie from "cookie-parser";
-import * as cheerio from 'cheerio';
 
 export const app = express();
 export const prisma = new PrismaClient();
