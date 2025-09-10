@@ -34,7 +34,8 @@ const addProject = CatchAsync(async (req, res) => {
 });
 
 const getProjects = CatchAsync(async (req, res) => {
-    const { page, search } = req.query;
+    const { page, search, verified } = req.query;
+    console.log(verified);
 
     const projects = await prisma.project.findMany({
         where: {
@@ -44,7 +45,10 @@ const getProjects = CatchAsync(async (req, res) => {
                     mode: "insensitive"
                 }
             }),
-            isDelete: false
+            isDelete: false,
+            ...((Boolean(verified) === true) && {
+                isVerified: true
+            })
         },
         take: 20,
         ...(page && { skip: Number(page) * 20 }),
@@ -325,7 +329,7 @@ const verifyProject = CatchAsync(async (req, res) => {
 
     if (!id) {
         throw new Error("Id is required");
-    }   
+    }
 
     const result = await prisma.$transaction(async (transactionClient) => {
         const project = await transactionClient.project.findUniqueOrThrow({

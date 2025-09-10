@@ -9,13 +9,27 @@ const Explore = () => {
     const exploreData = project.getProjects.use({
         search: watch("search") || "",
         page: Number(watch("page") || 0),
+        ...(watch("verified") && {
+            verified: watch("verified", true)
+        })
     });
+
+    const handleVerifiedCheckbox = () => {
+        const checkbox = document.getElementById("verified_checkbox") as HTMLInputElement;
+        if (checkbox.checked) {
+            setValue("verified", false);
+            checkbox.checked = false;
+        } else {
+            setValue("verified", true);
+            checkbox.checked = true;
+        }
+    }
 
     return (
         <div className="max-w-7xl mx-auto p-3">
             <div className="my-10">
-                <p className="font-monda text-4xl text-center">REAL USER FOR YOUR CRYPTO PROJECT</p>
-                <p className="font-montserrat text-center opacity-60">earn rewards from upcoming meme projects</p>
+                <p className="font-monda text-4xl text-center text-[#c1ff72] font-semibold">Your Gateway to the Next 100x Meme</p>
+                <p className="font-montserrat text-center opacity-60 mt-3">discover upcoming memecoins on solana launchpads</p>
             </div>
 
             <div className="flex items-center justify-between my-5 flex-col md:flex-row gap-3">
@@ -32,6 +46,29 @@ const Explore = () => {
                     <div
                         onClick={() => setValue("page", (Number(watch("page") || 0) + 1).toString())}
                         className="bg-white/5 p-2 px-5 rounded-sm cursor-pointer">Next</div>
+                </div>
+            </div>
+
+            <div className="flex items-center justify-between my-3 mt-10">
+                <p className="font-monda text-sm">Upcoming Memecoins</p>
+
+                <div
+                    onClick={handleVerifiedCheckbox}
+                    className="flex items-center cursor-pointer gap-2 bg-white/5 p-2 border border-white/10 rounded-full">
+                    <input
+                        id="verified_checkbox"
+                        type="checkbox"
+                        onChange={(e) => {
+                            if (e.target.checked) {
+                                setValue("verified", false);
+                                e.target.checked = false;
+                            } else {
+                                setValue("verified", true);
+                                e.target.checked = true;
+                            }
+                        }}
+                        className="toggle toggle-xs" />
+                    <p className="text-xs font-montserrat">Verified</p>
                 </div>
             </div>
 

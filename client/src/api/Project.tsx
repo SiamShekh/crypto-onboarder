@@ -35,10 +35,10 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
             invalidatesTags: ["project"]
         }),
         getProjects: builder.query({
-            query: ({ search, page }: { search?: string, page?: number }) => ({
+            query: ({ search, page, verified }: { search?: string, page?: number, verified: boolean }) => ({
                 url: "/project",
                 method: "GET",
-                params: { search, page }
+                params: { search, page, verified }
             }),
             providesTags: ["project"]
         }),
@@ -137,7 +137,7 @@ const project = {
     projectTraffic: ProjectEndpoint.useProjectTrafficMutation,
     DeleteAdminProject: ProjectEndpoint.useDeleteAdminProjectMutation,
     UndoAdminProject: ProjectEndpoint.useUndoAdminProjectMutation,
-    getProjectBySlug:{
+    getProjectBySlug: {
         use: ProjectEndpoint.useGetProjectBySlugQuery,
         lazy: ProjectEndpoint.useLazyGetProjectBySlugQuery
     },
