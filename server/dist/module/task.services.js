@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const http_status_codes_1 = require("http-status-codes");
 const __1 = require("..");
 const Utilite_1 = require("../utils/Utilite");
 const addTask = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -58,8 +59,26 @@ const deleteTask = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, voi
     }));
     res.status(200).json(result);
 }));
+const editTask = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { icon, label, href, id } = req.body;
+    if (!icon || !label || !href || !id) {
+        throw new Error("Require field missing.");
+    }
+    const update = yield __1.prisma.task.update({
+        where: {
+            id
+        },
+        data: {
+            taskImg: icon,
+            taskHref: href,
+            taskLabel: label
+        }
+    });
+    res.status(http_status_codes_1.StatusCodes.OK).json(update);
+}));
 const task = {
     addTask,
-    deleteTask
+    deleteTask,
+    editTask
 };
 exports.default = task;

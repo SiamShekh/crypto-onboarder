@@ -6,12 +6,13 @@ import project from "../api/Project";
 import { QueryStatus } from "@reduxjs/toolkit/query";
 import InputField from "../components/item/InputField";
 import { RTKErrorTypes } from "..";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const AddProject = () => {
     const method = useForm();
     const [addProject, { status, data: projectData, error: errorProject }] = project.NewProject();
     const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     const onSubmit = method.handleSubmit((data) => {
         if (Number(data?.logo[0]?.size || 0) > 524288) {
@@ -48,6 +49,8 @@ const AddProject = () => {
             case QueryStatus.fulfilled:
                 setIsLoading(false);
 
+                (document.getElementById('project') as HTMLDialogElement).showModal();
+
                 if (projectData?.status === "success") {
                     toast.success("Project added successfully");
                     method.reset();
@@ -76,6 +79,23 @@ const AddProject = () => {
                     <span className="loading loading-spinner loading-md" />
                 </div>
             }
+
+            {/* <button className="btn" onClick={() => document.getElementById('project').showModal()}>open modal</button> */}
+            <dialog id="project" className="modal">
+                <div className="modal-box">
+                    <p className="font-opensans text-[#c1ff72] text-xl text-center font-medium">Your project is now live on WhyBuy 🎉</p>
+                    <p className="my-3 text-center font-montserrat text-sm">To increase visibility and build trust, you can now:</p>
+                    <p className="font-montserrat text-center font-medium text-yellow-400 text-xs">Add your official social handles (X, Telegram, Discord, Website, etc..)</p>
+                    <p className="font-montserrat text-center font-medium text-yellow-400 text-xs my-1">Create social tasks for users (Follow, Join, Retweet, Visit, etc..)</p>
+                    <p className="font-montserrat text-center font-medium text-yellow-400 text-xs my-1">Engage the community and boost your project's credibility before launch.</p>
+                    <button
+                        onClick={() => {
+                            navigate(`/edit-project/${projectData?.data?.slug}`);
+                            (document.getElementById('project') as HTMLDialogElement).close();
+                        }}
+                        className="text-[#c1ff72] text-center border p-3 cursor-pointer w-full mt-5 rounded-xl border-white/20 text-sm">Add Social Tasks</button>
+                </div>
+            </dialog>
 
             <FormProvider {...method}>
                 <form onSubmit={onSubmit} className="max-w-7xl mx-auto font-montserrat">

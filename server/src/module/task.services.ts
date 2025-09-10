@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes";
 import { prisma } from "..";
 import { CatchAsync } from "../utils/Utilite";
 
@@ -58,11 +59,34 @@ const deleteTask = CatchAsync(async (req, res) => {
     })
 
     res.status(200).json(result);
+});
+
+const editTask = CatchAsync(async (req, res) => {
+    const { icon, label, href, id } = req.body;
+
+    if (!icon || !label || !href || !id) {
+        throw new Error("Require field missing.");
+    }
+
+
+    const update = await prisma.task.update({
+        where: {
+            id
+        },
+        data: {
+            taskImg: icon,
+            taskHref: href,
+            taskLabel: label
+        }
+    });
+
+    res.status(StatusCodes.OK).json(update);
 })
 
 const task = {
     addTask,
-    deleteTask
+    deleteTask,
+    editTask
 }
 
 export default task;

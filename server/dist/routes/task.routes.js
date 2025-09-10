@@ -8,6 +8,7 @@ const Middleware_1 = require("../utils/Middleware");
 const task_services_1 = __importDefault(require("../module/task.services"));
 const TaskRoutes = (0, express_1.Router)();
 TaskRoutes.post("/", Middleware_1.UserVaildation, task_services_1.default.addTask);
+TaskRoutes.patch("/", Middleware_1.UserVaildation, task_services_1.default.editTask);
 TaskRoutes.delete("/", Middleware_1.UserVaildation, task_services_1.default.deleteTask);
 exports.default = TaskRoutes;
 ;

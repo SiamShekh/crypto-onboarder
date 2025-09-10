@@ -1,14 +1,14 @@
 import { useParams } from "react-router-dom";
 import project from "../api/Project";
 import { FieldValues, FormProvider, useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { QueryStatus } from "@reduxjs/toolkit/query";
 import { toast } from "sonner";
 import InputField from "../components/item/InputField";
 import UploadImage from "../utils/UploadImage";
 import task from "../api/Task";
 import { FaChevronRight } from "react-icons/fa";
-import { Task } from "..";
+import { RTKErrorTypes, Task } from "..";
 
 const EditProject = () => {
     const param = useParams();
@@ -232,14 +232,14 @@ export default EditProject;
 
 const NewTaskModal = ({ projectId }: { projectId: number }) => {
     const methods = useForm();
-    const taskApi = task.AddTask();
+    const [taskMutation, { error, status }] = task.AddTask();
+    const [isLoading, setLoading] = useState(false);
 
     const onSubmit = async (e: FieldValues) => {
-        console.log(e);
+        setLoading(true);
         Promise.resolve(UploadImage(e?.icon[0]))
             .then((imgUrl) => {
-                console.log(`img: `, imgUrl);
-                taskApi[0]({
+                taskMutation({
                     taskLabel: e?.title,
                     taskImg: imgUrl,
                     taskHref: e?.link,
@@ -251,20 +251,21 @@ const NewTaskModal = ({ projectId }: { projectId: number }) => {
             })
     }
 
-    console.log(methods.watch("title"));
-
     useEffect(() => {
-        switch (taskApi[1]?.status) {
+        switch (status) {
             case QueryStatus.fulfilled:
                 toast.success("Task created successfully");
+                setLoading(false);
+                methods.reset();
+                (document.getElementById("new_task") as HTMLDialogElement).close();
                 break;
 
             case QueryStatus.pending:
-                toast.error("Something went wrong");
+                toast.error((error as RTKErrorTypes)?.data?.msg || "Something went wrong");
+                setLoading(false);
                 break;
         }
-    }, [taskApi[1].status])
-
+    }, [status, error, methods]);
 
     return (
         <dialog id="new_task" className="modal">
@@ -319,13 +320,16 @@ const NewTaskModal = ({ projectId }: { projectId: number }) => {
                             className="outline-none bg-white/10 w-full p-3 rounded-md"
                         />
                         {
-
+                            isLoading ?
+                                <button className="bg-white text-black font-medium p-3 rounded-full">
+                                    <span className="loading loading-spinner loading-md"></span>
+                                </button> :
+                                <button type="submit" className="bg-white text-black font-medium p-3 rounded-full">Add Task</button>
                         }
-                        <button type="submit" className="bg-white text-black font-medium p-3 rounded-full">Add Task</button>
                         <button
                             onClick={() => (document.getElementById("new_task") as HTMLDialogElement).close()}
                             className="text-sm"
-                            type="button">No thanks</button>
+                            type="button">Go back</button>
                     </form>
                 </FormProvider>
             </div>

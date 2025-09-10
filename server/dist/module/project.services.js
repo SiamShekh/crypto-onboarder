@@ -44,14 +44,16 @@ const addProject = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, voi
 }));
 const getProjects = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, search, verified } = req.query;
-    const projects = yield __1.prisma.project.findMany(Object.assign({ where: Object.assign(Object.assign(Object.assign({}, (search && {
+    const projects = yield __1.prisma.project.findMany(Object.assign(Object.assign({ where: Object.assign(Object.assign(Object.assign({}, (search && {
             name: {
                 contains: String(search),
                 mode: "insensitive"
             }
         })), { isDelete: false }), ((Boolean(verified) === true) && {
             isVerified: true
-        })), take: 20 }, (page && { skip: Number(page) * 20 })));
+        })), take: 20 }, (page && { skip: Number(page) * 20 })), { orderBy: {
+            createdAt: "desc"
+        } }));
     res.status(200).json(projects);
 }));
 const getMyProjects = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -61,6 +63,9 @@ const getMyProjects = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, 
             userId: (_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id,
             isDelete: false
         },
+        orderBy: {
+            createdAt: "desc"
+        }
         // select: {
         //     id: true,
         //     image: true,
