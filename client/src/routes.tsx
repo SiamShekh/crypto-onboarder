@@ -5,7 +5,6 @@ import ContextApi from "./utils/ContextApi";
 import AddProject from "./page/AddProject";
 import Explore from "./page/Explore";
 import Profile from "./page/Profile";
-import EditProject from "./page/EditProject";
 import ProjectDetails from "./page/ProjectDetails";
 import AdminLayout from "./layout/AdminLayout";
 import Login from "./page/admin/Login";
@@ -15,6 +14,8 @@ import Wallet from "./page/admin/Wallet";
 import Project from "./page/admin/Project";
 import Terms from "./page/Terms";
 import Privacy from "./page/Privacy";
+import MoreInfoProject from "./page/MoreInfoProject";
+import RefererInfo from "./page/RefererInfo";
 
 const Routes = createBrowserRouter([
     {
@@ -43,8 +44,12 @@ const Routes = createBrowserRouter([
                 element: <Profile />
             },
             {
-                path: "edit-project/:id",
-                element: <EditProject />
+                path: "more-info/:id",
+                element: <MoreInfoProject />
+            },
+            {
+                path: "referer-info/:id",
+                element: <RefererInfo />
             },
             {
                 path: "/detail/:slug",

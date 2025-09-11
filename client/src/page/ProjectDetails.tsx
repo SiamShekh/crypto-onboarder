@@ -1,4 +1,4 @@
-import { useLocation, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import project from "../api/Project";
 import { DETAILS_PAGE } from "../constant";
 import { useContext, useEffect } from "react";

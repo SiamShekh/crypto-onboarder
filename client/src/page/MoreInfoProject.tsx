@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import project from "../api/Project";
 import { FieldValues, FormProvider, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
@@ -8,11 +8,11 @@ import InputField from "../components/item/InputField";
 import UploadImage from "../utils/UploadImage";
 import task from "../api/Task";
 import { FaChevronRight } from "react-icons/fa";
-import { RTKErrorTypes, Task } from "..";
+import { RTKErrorTypes, Task, User } from "..";
 
-const EditProject = () => {
+const MoreInfoProject = () => {
     const param = useParams();
-    const { data, isFetching } = project.getProjectBySlug.use({ slug: param?.id as string });
+    const { data, isFetching } = project.getSpecificProject.use({ slug: param?.id as string });
     const method = useForm();
     const [updateProjectMutation, { status: updateProjectStatus, isLoading }] = project.UpdateProject();
     const deleteTaskMutation = task.DeleteTask();
@@ -21,9 +21,9 @@ const EditProject = () => {
         updateProjectMutation({
             id: String(data?.id), body: {
                 name: e?.name,
-                tagline: e?.tagline,
                 reward: e?.reward,
-                task: e?.task,
+                description: String(e?.description).trim(),
+                launchDate: new Date(e?.launch_date)
             }
         });
     }
@@ -31,6 +31,7 @@ const EditProject = () => {
     useEffect(() => {
         switch (updateProjectStatus) {
             case QueryStatus.fulfilled:
+                (document.getElementById('edit_project') as HTMLDialogElement).close();
                 toast.success("Project updated successfully");
                 break;
 
@@ -80,83 +81,127 @@ const EditProject = () => {
                     <span className="loading loading-spinner loading-md" />
                 </div>
             }
-
             <NewTaskModal projectId={data?.id} />
 
-            <FormProvider {...method}>
-                <form onSubmit={method.handleSubmit(addYourProject)} className="max-w-7xl mx-auto font-montserrat">
-                    <p className="font-medium text-4xl text-white text-center my-5">Edit your project</p>
-                    <div className="bg-white/5 p-3 rounded-md grid grid-cols-2 gap-6">
-
-                        <InputField
-                            fieldPlaceholder="Enter project name"
-                            fieldType="text"
-                            registerKey={"name"}
-                            className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
-                            minLength={3}
-                            maxLength={12}
-                            label="Project Name"
-                            required
-                        />
-
-                        <InputField
-                            fieldPlaceholder="Enter launch date"
-                            fieldType="date"
-                            registerKey={"launch_date"}
-                            className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
-                            label="Launch Date"
-                            required
-                        />
-
-                        <InputField
-                            fieldType="text"
-                            registerKey={"reward"}
-                            className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
-                            label="Rewards"
-                            fieldPlaceholder="Enter reward (optional)"
-                        />
-
-                        <div className="col-span-full">
-                            <p className="text-xs">Project description</p>
-                            <textarea
-                                placeholder="Write a brief about your project"
-                                {...method.register("description", {
-                                    maxLength: {
-                                        value: 500,
-                                        message: `Maximum 500 characters allowed.`
-                                    },
-                                    minLength: {
-                                        value: 50,
-                                        message: `Minimum 50 characters required.`
-                                    },
-                                    required: {
-                                        message: `Description is required`,
-                                        value: true
-                                    }
-                                })}
-                                className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
-                            />
-                            {method.formState.errors["description"] && (
-                                <p className="text-xs text-red-500 line-clamp-1 mt-1">{method.formState.errors["description"]?.message as string}</p>
-                            )}
+            <div className="grid lg:grid-cols-3 gap-3 max-w-7xl mx-auto">
+                <div className="bg-white/3 lg:col-span-2 rounded-xl p-3">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <img src={data?.image} alt={data?.name} className="bg-white/10 size-12 rounded-full overflow-hidden" />
+                            <div>
+                                <p className="font-opensans text-xl">{data?.name}</p>
+                                <p className="text-xs font-montserrat opacity-50">Launch Date: {new Date(data?.launchDate).toLocaleDateString("en-GB")}</p>
+                            </div>
                         </div>
+                        <button
+                            onClick={() => (document.getElementById('edit_project') as HTMLDialogElement).showModal()}
+                            className="text-xs font-montserrat bg-white/5 rounded-full border-white/5 text-white border px-5 py-1">Edit</button>
+                    </div>
+                    <div className="w-full h-[1px] bg-gradient-to-r from-transparent my-7 via-white/20 to-transparent"></div>
+                    <div>
+                        <p className="text-xs opacity-50 font-montserrat">About {data?.name}?</p>
+                        <p className="font-opensans line-clamp-3">{data?.description}</p>
+                    </div>
+                </div>
+
+                <div className="bg-white/3 rounded-xl p-3">
+                    <div className="p-2 flex items-center justify-between">
+                        <p className="text-2xl font-monda font-semibold text-center">🏆 Leaderboard</p>
+                        <Link to={`/referer-info/${param?.id as string}`}>
+                            <p className="font-monda text-xs bg-white/5 p-1 px-3 border border-white/10 rounded-full">View more</p>
+                        </Link>
                     </div>
 
-                    <div className="flex items-center justify-center">
-                        {
-                            isLoading ?
-                                <button type="button" className="bg-white/5 px-10 py-2 cursor-pointer font-medium rounded-2xl mx-auto my-5">
-                                    <span className="loading loading-spinner loading-md"></span>
-                                </button> :
-                                <button type="submit" className="bg-white/5 px-10 py-2 cursor-pointer font-medium rounded-2xl mx-auto my-5">Edit</button>
-                        }
-                    </div>
-                </form>
-            </FormProvider>
+                    {
+                        data?.ProjectReferrel && data?.ProjectReferrel?.length > 0 ?
+                            data?.ProjectReferrel?.slice(0, 2).map((referrel: { user: User }, i: number) => (
+                                <div key={i} className="flex items-center justify-between my-2 bg-white/5 p-3 rounded-xl">
+                                    <div className="flex items-center gap-3">
+                                        <div>
+                                            <p className="font-monda capitalize">{referrel?.user?.username ? referrel?.user?.username : referrel?.user?.solAddress?.slice(0, 15) + "..."}</p>
+                                            <p className="font-monda text-xs opacity-50 capitalize">{referrel?.user?.solAddress?.slice(0, 15) + "..."}</p>
+                                        </div>
+                                    </div>
+                                    <p className="text-xs font-montserrat">{referrel?.user?._count?.ProjectReferrel} People</p>
+                                </div>
+                            )) :
+                            <p className="font-montserrat absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-xs">No referrals yet</p>
+                    }
+                </div>
+            </div>
 
-            <div className="divider max-w-2xl mx-auto">OR</div>
+            <dialog id="edit_project" className="modal">
+                <div className="modal-box">
+                    <FormProvider {...method}>
+                        <form onSubmit={method.handleSubmit(addYourProject)} className="flex flex-col gap-3">
+                            <InputField
+                                fieldPlaceholder="Enter project name"
+                                fieldType="text"
+                                registerKey={"name"}
+                                className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
+                                minLength={3}
+                                maxLength={12}
+                                label="Project Name"
+                                required
+                            />
 
-            <div className="max-w-7xl mx-auto">
+                            <InputField
+                                fieldPlaceholder="Enter launch date"
+                                fieldType="date"
+                                registerKey={"launch_date"}
+                                className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
+                                label="Launch Date"
+                                required
+                            />
+
+                            <InputField
+                                fieldType="text"
+                                registerKey={"reward"}
+                                className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
+                                label="Rewards"
+                                fieldPlaceholder="Enter reward (optional)"
+                            />
+
+                            <div className="col-span-full">
+                                <p className="text-xs">Project description</p>
+                                <textarea
+                                    placeholder="Write a brief about your project"
+                                    {...method.register("description", {
+                                        maxLength: {
+                                            value: 500,
+                                            message: `Maximum 500 characters allowed.`
+                                        },
+                                        minLength: {
+                                            value: 50,
+                                            message: `Minimum 50 characters required.`
+                                        },
+                                        required: {
+                                            message: `Description is required`,
+                                            value: true
+                                        }
+                                    })}
+                                    className="p-3 outline-none bg-white/5 mt-1 rounded-md w-full"
+                                />
+                                {method.formState.errors["description"] && (
+                                    <p className="text-xs text-red-500 line-clamp-1 mt-1">{method.formState.errors["description"]?.message as string}</p>
+                                )}
+                            </div>
+
+                            <div className="flex items-center justify-center">
+                                {
+                                    isLoading ?
+                                        <button type="button" className="bg-white w-full p-2 cursor-pointer font-medium rounded-full text-black mx-auto my-5">
+                                            <span className="loading loading-spinner loading-md"></span>
+                                        </button> :
+                                        <button type="submit" className="bg-white w-full p-2 cursor-pointer font-medium rounded-full text-black mx-auto my-5">Edit</button>
+                                }
+                            </div>
+                        </form>
+                    </FormProvider>
+                </div>
+            </dialog>
+
+            <div className="max-w-7xl mx-auto mt-5">
                 <div className="flex items-center justify-between">
                     <p className="font-montserrat">Task: {data?.task?.length}</p>
 
@@ -228,7 +273,7 @@ const EditProject = () => {
     );
 };
 
-export default EditProject;
+export default MoreInfoProject;
 
 const NewTaskModal = ({ projectId }: { projectId: number }) => {
     const methods = useForm();

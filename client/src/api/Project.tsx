@@ -14,9 +14,9 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
             query: ({ id, body }: {
                 id: string, body: {
                     name: string;
-                    tagline: string;
+                    launchDate: Date;
                     reward: string;
-                    task: string[];
+                    description: string
                 }
             }) => ({
                 url: `/project/update/${id}`,
@@ -103,9 +103,9 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
             }),
             invalidatesTags: ["project"]
         }),
-        getProjectBySlug: builder.query({
+        getTopRefererBySlug: builder.query({
             query: ({ slug }: { slug: string }) => ({
-                url: "/project/slug",
+                url: "/project/referer",
                 method: "GET",
                 params: { slug }
             }),
@@ -137,9 +137,9 @@ const project = {
     projectTraffic: ProjectEndpoint.useProjectTrafficMutation,
     DeleteAdminProject: ProjectEndpoint.useDeleteAdminProjectMutation,
     UndoAdminProject: ProjectEndpoint.useUndoAdminProjectMutation,
-    getProjectBySlug: {
-        use: ProjectEndpoint.useGetProjectBySlugQuery,
-        lazy: ProjectEndpoint.useLazyGetProjectBySlugQuery
+    getTopRefererBySlug: {
+        use: ProjectEndpoint.useGetTopRefererBySlugQuery,
+        lazy: ProjectEndpoint.useLazyGetTopRefererBySlugQuery
     },
     VerifyProjectAdmin: ProjectEndpoint.useVerifyProjectAdminMutation
 }

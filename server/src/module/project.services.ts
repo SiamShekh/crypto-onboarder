@@ -65,7 +65,7 @@ const getMyProjects = CatchAsync(async (req, res) => {
             userId: req?.user?.id,
             isDelete: false
         },
-        orderBy:{
+        orderBy: {
             createdAt: "desc"
         }
         // select: {
@@ -108,9 +108,10 @@ const getSpacificProject = CatchAsync(async (req, res) => {
                         },
                     }
                 },
-                take: 5
+                take: 5,
+                distinct: ["userId"]
             },
-            task: true
+            task: true,
         }
     });
 
@@ -310,24 +311,6 @@ const undoProject = CatchAsync(async (req, res) => {
     res.status(200).json(result);
 });
 
-const getProjectBySlugId = CatchAsync(async (req, res) => {
-    const { slug } = req.query;
-
-    if (!slug) {
-        throw new Error("Slug is required");
-    }
-
-    const project = await prisma.project.findFirst({
-        where: {
-            slug: slug as string
-        },
-        include: {
-            task: true
-        }
-    });
-
-    res.status(200).json(project);
-});
 
 const verifyProject = CatchAsync(async (req, res) => {
     const { id } = req.body;
@@ -359,6 +342,39 @@ const verifyProject = CatchAsync(async (req, res) => {
     res.status(StatusCodes.OK).json(result);
 });
 
+const projectReferer = CatchAsync(async (req, res) => {
+
+    const topReferrer = await prisma.user.findMany({
+        include: {
+            _count: {
+                select: {
+                    ProjectReferrel: {
+                        where: {
+                            slug: req?.query?.slug as string
+                        }
+                    }
+                }
+            }
+        },
+        orderBy: {
+            ProjectReferrel: {
+                _count: "desc"
+            }
+        },
+        where: {
+            ProjectReferrel: {
+                some: {
+                    slug: req?.query?.slug as string
+                }
+            },
+
+        },
+        take: 50
+    });
+
+    res.send(topReferrer)
+})
+
 const project = {
     addProject,
     getProjects,
@@ -370,8 +386,8 @@ const project = {
     getAdminProjects,
     deleteProject,
     undoProject,
-    getProjectBySlugId,
-    verifyProject
+    verifyProject,
+    projectReferer
 }
 
 export default project;
