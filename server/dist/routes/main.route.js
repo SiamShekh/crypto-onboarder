@@ -13,5 +13,6 @@ MainRoute.use("/user", user_route_1.default);
 MainRoute.use("/project", project_route_1.default);
 MainRoute.use("/admin", admin_route_1.default);
 MainRoute.use("/task", task_routes_1.default);
+// console.log();
 exports.default = MainRoute;
 // console.log();

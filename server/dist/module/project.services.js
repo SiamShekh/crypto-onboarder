@@ -102,9 +102,10 @@ const getSpacificProject = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(voi
                         },
                     }
                 },
-                take: 5
+                take: 5,
+                distinct: ["userId"]
             },
-            task: true
+            task: true,
         }
     });
     res.status(200).json(project);
@@ -258,21 +259,6 @@ const undoProject = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, vo
     }));
     res.status(200).json(result);
 }));
-const getProjectBySlugId = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { slug } = req.query;
-    if (!slug) {
-        throw new Error("Slug is required");
-    }
-    const project = yield __1.prisma.project.findFirst({
-        where: {
-            slug: slug
-        },
-        include: {
-            task: true
-        }
-    });
-    res.status(200).json(project);
-}));
 const verifyProject = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.body;
     if (!id) {
@@ -296,6 +282,36 @@ const verifyProject = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, 
     }));
     res.status(http_status_codes_1.StatusCodes.OK).json(result);
 }));
+const projectReferer = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    const topReferrer = yield __1.prisma.user.findMany({
+        include: {
+            _count: {
+                select: {
+                    ProjectReferrel: {
+                        where: {
+                            slug: (_a = req === null || req === void 0 ? void 0 : req.query) === null || _a === void 0 ? void 0 : _a.slug
+                        }
+                    }
+                }
+            }
+        },
+        orderBy: {
+            ProjectReferrel: {
+                _count: "desc"
+            }
+        },
+        where: {
+            ProjectReferrel: {
+                some: {
+                    slug: (_b = req === null || req === void 0 ? void 0 : req.query) === null || _b === void 0 ? void 0 : _b.slug
+                }
+            },
+        },
+        take: 50
+    });
+    res.send(topReferrer);
+}));
 const project = {
     addProject,
     getProjects,
@@ -307,7 +323,7 @@ const project = {
     getAdminProjects,
     deleteProject,
     undoProject,
-    getProjectBySlugId,
-    verifyProject
+    verifyProject,
+    projectReferer
 };
 exports.default = project;

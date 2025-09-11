@@ -13,10 +13,10 @@ ProjectRoute.get("/me", Middleware_1.UserVaildation, project_services_1.default.
 ProjectRoute.get("/specific", Middleware_1.UserVaildation, project_services_1.default.getSpacificProject);
 ProjectRoute.patch("/update/:id", Middleware_1.UserVaildation, project_services_1.default.updateProject);
 ProjectRoute.patch("/delete/:id", Middleware_1.UserVaildation, project_services_1.default.softDeleteProject);
-ProjectRoute.get("/slug", Middleware_1.UserVaildation, project_services_1.default.getProjectBySlugId);
 ProjectRoute.post("/traffic", project_services_1.default.referrelIp);
 ProjectRoute.get("/admin", Middleware_1.AdminVaildation, project_services_1.default.getAdminProjects);
 ProjectRoute.patch("/admin", Middleware_1.AdminVaildation, project_services_1.default.deleteProject);
 ProjectRoute.patch("/undo", Middleware_1.AdminVaildation, project_services_1.default.undoProject);
 ProjectRoute.patch("/verify", Middleware_1.AdminVaildation, project_services_1.default.verifyProject);
+ProjectRoute.get("/referer", Middleware_1.UserVaildation, project_services_1.default.projectReferer);
 exports.default = ProjectRoute;
