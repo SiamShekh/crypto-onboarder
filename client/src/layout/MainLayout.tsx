@@ -146,11 +146,11 @@ const MainLayout = () => {
                         {
                             nav_item.map((nav) => (
                                 nav?.name !== "Earn Rewards" &&
-                                    <Link
-                                        className="hover:text-white text-white/40 duration-500"
-                                        key={nav?.id}
-                                        to={nav?.href}
-                                    >{nav?.name}</Link>
+                                <Link
+                                    className="hover:text-white text-white/40 duration-500"
+                                    key={nav?.id}
+                                    to={nav?.href}
+                                >{nav?.name}</Link>
                             ))
                         }
                     </div>
@@ -241,6 +241,7 @@ const MainLayout = () => {
                                 nav_item.map((nav) => (
                                     nav?.name === "Earn Rewards" ?
                                         <button
+                                            key={nav?.id}
                                             onClick={() => (document.getElementById("earn_reward_modal") as HTMLDialogElement).showModal()}
                                             className="bg-white/10 cursor-pointer p-2 px-5 text-sm font-monda rounded-full">earn rewards</button>
                                         :
