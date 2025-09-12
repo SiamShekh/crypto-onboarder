@@ -125,7 +125,7 @@ const MoreInfoProject = () => {
                                     <p className="text-xs font-montserrat">{referrel?.user?._count?.ProjectReferrel} People</p>
                                 </div>
                             )) :
-                            <p className="font-montserrat absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] text-xs">No referrals yet</p>
+                            <p className="font-montserrat text-center text-xs">No referrals yet</p>
                     }
                 </div>
             </div>
