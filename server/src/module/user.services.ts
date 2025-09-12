@@ -1,5 +1,4 @@
 import { prisma } from "..";
-import IpCollect from "../utils/IpCollect";
 import { CatchAsync } from "../utils/Utilite";
 import jwt from "jsonwebtoken";
 
@@ -29,8 +28,6 @@ const create_user = CatchAsync(async (req, res) => {
 
         return val;
     });
-
-    IpCollect(tx?.id, 'login time ip.');
 
     const token = jwt.sign(tx, process.env.SECRET as string);
 
@@ -97,18 +94,18 @@ const getUserAdmin = (CatchAsync(async (req, res) => {
         select: {
             username: true,
             solAddress: true,
-            ips: {
-                take: 1,
-                orderBy: {
-                    createdAt: "desc"
-                },
-                select: {
-                    ip: true,
-                    city: true,
-                    timezone: true,
-                    country: true
-                }
-            }
+            // ips: {
+            //     take: 1,
+            //     orderBy: {
+            //         createdAt: "desc"
+            //     },
+            //     select: {
+            //         ip: true,
+            //         city: true,
+            //         timezone: true,
+            //         country: true
+            //     }
+            // }
         }
     });
 

@@ -12,32 +12,26 @@ const Wallet = () => {
                     <thead>
                         <tr>
                             <th></th>
-                            <th>User</th>
-                            <th>IP</th>
-                            <th>City</th>
-                            <th>Timezone</th>
-                            <th>Country</th>
+                            <th>Username</th>
+                            <th>Address</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             adminWallet?.data?.length === 0 || adminWallet?.data?.length === undefined ?
                                 <tr>
-                                    <td colSpan={6}>
+                                    <td colSpan={3}>
                                         <div>
                                             <p className="text-center">No user found</p>
                                         </div>
                                     </td>
                                 </tr>
                                 :
-                                adminWallet?.data?.map((user: { username: string, solAddress: string, ips: { ip: string, city: string, timezone: string, country: string }[] }, id: number) => (
+                                adminWallet?.data?.map((user: { username: string, solAddress: string }, id: number) => (
                                     <tr key={id}>
                                         <th>{id + 1}</th>
-                                        <td>{user?.username ? user?.username : user?.solAddress?.slice(0, 10) + "..."}</td>
-                                        <td>{user?.ips[0]?.ip}</td>
-                                        <td>{user?.ips[0]?.city}</td>
-                                        <td>{user?.ips[0]?.timezone}</td>
-                                        <td>{user?.ips[0]?.country}</td>
+                                        <td>{user?.username ? user?.username : "N/A"}</td>
+                                        <td>{user?.solAddress}</td>
                                     </tr>
                                 ))
                         }

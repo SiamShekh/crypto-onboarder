@@ -67,16 +67,10 @@ const stats = CatchAsync(async (req, res) => {
     const result = await prisma.$transaction(async (transactionClient) => {
         const wallet = await transactionClient.user.count();
         const project = await transactionClient.project.count();
-        const visitor = await transactionClient.iP.count();
+        const referrel = await transactionClient.projectReferrel.count();
 
-        const recent10Visitor = await transactionClient.iP.findMany({
-            orderBy: {
-                createdAt: "desc"
-            },
-            take: 10
-        });
 
-        return { wallet, project, visitor, ten: recent10Visitor };
+        return { wallet, project, referrel };
     })
 
     res.status(200).json(result);

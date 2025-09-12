@@ -21,53 +21,11 @@ model User {
   /// last wallet connect time
   connectAt DateTime @default(now())
 
-  /// All recorded IP addresses for the user
-  ips             IP[]
   project         project[]
   ProjectReferrel ProjectReferrel[]
   task            task[]
 }
 
-/// Stores user IP details and geo-location metadata for auditing or fraud prevention.
-model IP {
-  id Int @id @default(autoincrement())
-
-  /// Telegram ID of the associated user
-  userId Int
-
-  /// Relation to the User entity
-  user User @relation(fields: [userId], references: [id])
-
-  /// IP address
-  ip String
-
-  /// Optional city of the IP
-  city String?
-
-  /// Optional region
-  region String?
-
-  /// Optional country
-  country String?
-
-  /// Optional lat/lng coordinates
-  loc String?
-
-  /// Optional ISP or organization info
-  org String?
-
-  /// Postal code (if available)
-  postal String?
-
-  /// Timezone (if available)
-  timezone String?
-
-  /// Any additional metadata
-  info String
-
-  /// When the IP record was created
-  createdAt DateTime @default(now())
-}
 
 /// Represents a project submitted by a user.
 model project {
@@ -107,10 +65,10 @@ model ProjectReferrel {
   project   project  @relation(fields: [slug], references: [slug]) // Relation to the project entity
   userId    Int // Id of the user who made the referrel
   user      User     @relation(fields: [userId], references: [id]) // Relation to the user entity
-  visitorIp String // IP address of the visitor who clicked the referrel link
+  fingerprints String // IP address of the visitor who clicked the referrel link
   createdAt DateTime @default(now()) // Timestamp when the referrel was created
 
-  @@unique([slug, userId, visitorIp])
+  @@unique([slug, userId, fingerprints])
 }
 
 /// Admin Panel Login model

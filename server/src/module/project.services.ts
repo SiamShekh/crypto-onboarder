@@ -169,13 +169,17 @@ const softDeleteProject = CatchAsync(async (req, res) => {
 
 const referrelIp = CatchAsync(async (req, res) => {
     const body = req.body;
-
+    
     if (!body?.slug) {
         throw new Error("Slug is required");
     }
 
     if (!body?.address) {
         throw new Error("Address is required");
+    }
+
+    if (!body?.bot_token) {
+        throw new Error("Bot token is required");
     }
 
     const result = await prisma.$transaction(async (transactionClient) => {
@@ -199,14 +203,11 @@ const referrelIp = CatchAsync(async (req, res) => {
             throw new Error("Project not found");
         }
 
-        const request = await fetch(`https://ipinfo.io/?token=c79e99d0e5c9f5`);
-        const requestJson = await request.json();
-
         const referrel = await transactionClient.projectReferrel.create({
             data: {
                 userId: user?.id,
                 slug: project?.slug,
-                visitorIp: requestJson?.ip,
+                fingerprints: body?.bot_token,
             }
         });
 

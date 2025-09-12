@@ -5,6 +5,7 @@ import { useContext, useEffect } from "react";
 import { ContextValues } from "../utils/ContextApi";
 import { toast } from "sonner";
 import { Task, User } from "..";
+import fingerprintjs from "@fingerprintjs/fingerprintjs";
 
 const ProjectDetails = () => {
     const param = useParams();
@@ -15,12 +16,19 @@ const ProjectDetails = () => {
     const solAddress = useSearchParams()[0].get("startweb");
 
     useEffect(() => {
-        if (solAddress && param?.slug) {
-            traffic[0]({
-                slug: param?.slug as string,
-                address: solAddress,
-            });
-        }
+        const fingerprints = async () => {
+            const finger = await fingerprintjs.load();
+            const { visitorId } = await finger.get();
+            if (solAddress && param?.slug && !traffic[1]?.isLoading && !traffic[1]?.isError) {
+                traffic[0]({
+                    slug: param?.slug as string,
+                    address: solAddress,
+                    bot_token: visitorId
+                });
+            }
+        };
+
+        fingerprints();
     }, [param?.slug, solAddress, traffic]);
 
     if (isError) {
@@ -119,22 +127,23 @@ const ProjectDetails = () => {
                                 ))
                         }
 
-                        <div className="flex justify-between items-center col-span-full bg-white/5 p-3 rounded-md">
-                            <div>
-                                <p className="font-monda">Referral</p>
-                                {
-                                    isFetching ?
-                                        <p className="bg-black/10 w-72 rounded-sm h-6 " /> :
-                                        <p className="text-xs opacity-70">{referralLink}</p>
-                                }
+                        {
+                            values?.user?.data?.solAddress &&
+                            <div className="flex justify-between items-center col-span-full bg-white/5 p-3 rounded-md">
+                                <div>
+                                    <p className="font-monda">Referral</p>
+                                    {
+                                        isFetching ?
+                                            <p className="bg-black/10 w-72 rounded-sm h-6 " /> :
+                                            <p className="text-xs opacity-70">{referralLink}</p>
+                                    }
+                                </div>
+                                <button onClick={() => {
+                                    navigator.clipboard.writeText(referralLink);
+                                    toast.success("Copied to clipboard");
+                                }} className="font-montserrat text-sm cursor-pointer bg-white/10 px-5 py-1 rounded-md border border-white/10">Copy</button>
                             </div>
-                            <button onClick={() => {
-                                navigator.clipboard.writeText(referralLink);
-                                toast.success("Copied to clipboard");
-                            }} className="font-montserrat text-sm cursor-pointer bg-white/10 px-5 py-1 rounded-md border border-white/10">Copy</button>
-                        </div>
-
-
+                        }
                     </div>
                 </div>
 

@@ -16,10 +16,12 @@ import Terms from "./page/Terms";
 import Privacy from "./page/Privacy";
 import MoreInfoProject from "./page/MoreInfoProject";
 import RefererInfo from "./page/RefererInfo";
+import ErrorBoundary from "./components/one-time/ErrorBoundary";
 
 const Routes = createBrowserRouter([
     {
         path: "/",
+        errorElement: <ErrorBoundary />,
         element:
             <SolanaProvider>
                 <ContextApi>
