@@ -40,10 +40,9 @@ const ProjectDetails = () => {
     }
 
     return (
-        <div className="max-w-7xl mx-auto my-10">
-            <div className="grid grid-cols-3 gap-3">
-                <div className="col-span-2 bg-white/5 p-4 rounded-xl">
-
+        <div className="max-w-7xl mx-auto lg:my-10 p-3 lg:p-0">
+            <div className="grid lg:grid-cols-3 gap-3">
+                <div className="lg:col-span-2 bg-white/5 p-4 rounded-xl">
                     {
                         isFetching ?
                             <div className="flex items-center justify-between">
@@ -81,7 +80,7 @@ const ProjectDetails = () => {
                             </div>
                     }
 
-                    <div className="grid grid-cols-2 gap-3 mt-5">
+                    <div className="grid lg:grid-cols-2 gap-3 mt-5">
                         <div className="p-3 border-white/10 border w-full col-span-full rounded-md">
                             {data?.description}
                         </div>
@@ -135,7 +134,7 @@ const ProjectDetails = () => {
                                     {
                                         isFetching ?
                                             <p className="bg-black/10 w-72 rounded-sm h-6 " /> :
-                                            <p className="text-xs opacity-70">{referralLink}</p>
+                                            <p className="text-xs opacity-70 line-clamp-1 lg:max-w-full max-w-40">{referralLink}</p>
                                     }
                                 </div>
                                 <button onClick={() => {
@@ -147,7 +146,7 @@ const ProjectDetails = () => {
                     </div>
                 </div>
 
-                <div className="bg-white/5 p-4 relative rounded-xl">
+                <div className="bg-white/5 p-4 relative rounded-xl w-full">
                     <p className="text-2xl font-monda font-semibold text-center">🏆 Leaderboard</p>
                     {
                         data?.ProjectReferrel && data?.ProjectReferrel?.length > 0 ?
