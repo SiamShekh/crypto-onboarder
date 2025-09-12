@@ -158,6 +158,9 @@ const referrelIp = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, voi
     if (!(body === null || body === void 0 ? void 0 : body.address)) {
         throw new Error("Address is required");
     }
+    if (!(body === null || body === void 0 ? void 0 : body.bot_token)) {
+        throw new Error("Bot token is required");
+    }
     const result = yield __1.prisma.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
         const user = yield transactionClient.user.findFirst({
             where: {
@@ -175,13 +178,11 @@ const referrelIp = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, voi
         if (!project) {
             throw new Error("Project not found");
         }
-        const request = yield fetch(`https://ipinfo.io/?token=c79e99d0e5c9f5`);
-        const requestJson = yield request.json();
         const referrel = yield transactionClient.projectReferrel.create({
             data: {
                 userId: user === null || user === void 0 ? void 0 : user.id,
                 slug: project === null || project === void 0 ? void 0 : project.slug,
-                visitorIp: requestJson === null || requestJson === void 0 ? void 0 : requestJson.ip,
+                fingerprints: body === null || body === void 0 ? void 0 : body.bot_token,
             }
         });
         return referrel;

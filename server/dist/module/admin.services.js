@@ -73,14 +73,8 @@ const stats = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, 
     const result = yield __1.prisma.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
         const wallet = yield transactionClient.user.count();
         const project = yield transactionClient.project.count();
-        const visitor = yield transactionClient.iP.count();
-        const recent10Visitor = yield transactionClient.iP.findMany({
-            orderBy: {
-                createdAt: "desc"
-            },
-            take: 10
-        });
-        return { wallet, project, visitor, ten: recent10Visitor };
+        const referrel = yield transactionClient.projectReferrel.count();
+        return { wallet, project, referrel };
     }));
     res.status(200).json(result);
 }));

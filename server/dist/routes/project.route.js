@@ -10,7 +10,7 @@ const ProjectRoute = (0, express_1.Router)();
 ProjectRoute.post("/", Middleware_1.UserVaildation, project_services_1.default.addProject);
 ProjectRoute.get("/", project_services_1.default.getProjects);
 ProjectRoute.get("/me", Middleware_1.UserVaildation, project_services_1.default.getMyProjects);
-ProjectRoute.get("/specific", Middleware_1.UserVaildation, project_services_1.default.getSpacificProject);
+ProjectRoute.get("/specific", project_services_1.default.getSpacificProject);
 ProjectRoute.patch("/update/:id", Middleware_1.UserVaildation, project_services_1.default.updateProject);
 ProjectRoute.patch("/delete/:id", Middleware_1.UserVaildation, project_services_1.default.softDeleteProject);
 ProjectRoute.post("/traffic", project_services_1.default.referrelIp);

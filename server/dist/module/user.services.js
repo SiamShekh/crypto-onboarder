@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const __1 = require("..");
-const IpCollect_1 = __importDefault(require("../utils/IpCollect"));
 const Utilite_1 = require("../utils/Utilite");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const create_user = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -37,7 +36,6 @@ const create_user = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, vo
         });
         return val;
     }));
-    (0, IpCollect_1.default)(tx === null || tx === void 0 ? void 0 : tx.id, 'login time ip.');
     const token = jsonwebtoken_1.default.sign(tx, process.env.SECRET);
     res.cookie('token', token, { httpOnly: false, maxAge: 1000 * 60 * 60, secure: true, sameSite: "none" }).send({ status: true });
 }));
@@ -93,18 +91,18 @@ const getUserAdmin = ((0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, 
         select: {
             username: true,
             solAddress: true,
-            ips: {
-                take: 1,
-                orderBy: {
-                    createdAt: "desc"
-                },
-                select: {
-                    ip: true,
-                    city: true,
-                    timezone: true,
-                    country: true
-                }
-            }
+            // ips: {
+            //     take: 1,
+            //     orderBy: {
+            //         createdAt: "desc"
+            //     },
+            //     select: {
+            //         ip: true,
+            //         city: true,
+            //         timezone: true,
+            //         country: true
+            //     }
+            // }
         }
     });
     res.status(200).json(users);
