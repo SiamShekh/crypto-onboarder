@@ -285,6 +285,7 @@ const verifyProject = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, 
 }));
 const projectReferer = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
+    const page = req.query.page;
     const topReferrer = yield __1.prisma.user.findMany({
         include: {
             _count: {
@@ -309,7 +310,8 @@ const projectReferer = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0,
                 }
             },
         },
-        take: 50
+        take: 50,
+        skip: Number(page) * 50
     });
     res.send(topReferrer);
 }));

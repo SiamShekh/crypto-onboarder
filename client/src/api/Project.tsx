@@ -104,10 +104,10 @@ const ProjectEndpoint = BaseApi.injectEndpoints({
             invalidatesTags: ["project"]
         }),
         getTopRefererBySlug: builder.query({
-            query: ({ slug }: { slug: string }) => ({
+            query: ({ slug, page }: { slug: string, page: number }) => ({
                 url: "/project/referer",
                 method: "GET",
-                params: { slug }
+                params: { slug, page }
             }),
             providesTags: ["project"]
         }),

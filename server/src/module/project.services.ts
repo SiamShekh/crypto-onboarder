@@ -169,7 +169,7 @@ const softDeleteProject = CatchAsync(async (req, res) => {
 
 const referrelIp = CatchAsync(async (req, res) => {
     const body = req.body;
-    
+
     if (!body?.slug) {
         throw new Error("Slug is required");
     }
@@ -344,6 +344,7 @@ const verifyProject = CatchAsync(async (req, res) => {
 });
 
 const projectReferer = CatchAsync(async (req, res) => {
+    const page = req.query.page;
 
     const topReferrer = await prisma.user.findMany({
         include: {
@@ -370,7 +371,8 @@ const projectReferer = CatchAsync(async (req, res) => {
             },
 
         },
-        take: 50
+        take: 50,
+        skip: Number(page) * 50
     });
 
     res.send(topReferrer)

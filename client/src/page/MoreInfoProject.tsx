@@ -128,6 +128,12 @@ const MoreInfoProject = () => {
                             <p className="font-montserrat text-center text-xs">No referrals yet</p>
                     }
                 </div>
+
+                <div className="flex items-center justify-between lg:col-span-3 bg-white/5 p-3 rounded-xl">
+                    <p>To distribute rewards, get users' addresses here.</p>
+                    <Link to={`/referer-info/${data?.slug}`} className="bg-white/5 px-5 py-1 rounded-full">View</Link>
+                </div>
+
             </div>
 
             <dialog id="edit_project" className="modal">
@@ -233,7 +239,7 @@ const MoreInfoProject = () => {
                                         </td>
                                         :
                                         data?.task?.map((task: Task, index: number) => (
-                                            <tr>
+                                            <tr key={index}>
                                                 <th>{index + 1}</th>
                                                 <td>
                                                     <div className="flex items-center gap-3">
