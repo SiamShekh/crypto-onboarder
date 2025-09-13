@@ -135,6 +135,37 @@ const MainLayout = () => {
                 </div>
             </dialog>
 
+            <dialog id="all_wallet" className="modal">
+                <div className="modal-box">
+                    <p className="text-2xl font-opensans font-bold">Connect wallet</p>
+                    <p className="text-sm">Get start by connecting your preferred wallet below.</p>
+                    <div style={{ marginTop: "10px" }}>
+                        {wallets.map((wallet) => (
+                            <div
+                                key={wallet.adapter.name}
+                                onClick={() => handleWalletClick(wallet.adapter.name)}
+                                className="flex items-center gap-3 my-4 cursor-pointer hover:bg-white/10 p-3 rounded-2xl relative"
+                            >
+                                <img src={wallet?.adapter?.icon} alt={wallet.adapter.name} className="size-9 rounded-2xl" />
+                                <div>
+                                    <p className="font-medium">{wallet.adapter.name}</p>
+                                    <p className="text-xs opacity-50">Transaction Versions: {wallet.adapter.supportedTransactionVersions}</p>
+                                </div>
+                                {
+                                    wallet?.adapter?.name === "Phantom" &&
+                                    <p className="text-xs absolute right-3 font-montserrat">Recommend</p>
+                                }
+                            </div>
+                        ))}
+                    </div>
+
+                    <p className="font-monda">By connecting your wallet, you're agree to our <span className="text-blue-400">Terms of service</span> and our <span className="text-blue-400">privacy policy</span></p>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
+
             <div className="md:flex items-center justify-between p-3 max-w-7xl mx-auto hidden">
                 <div className="flex items-center gap-3">
                     <img
@@ -192,37 +223,6 @@ const MainLayout = () => {
                                         <p className="text-start text-xs text-white/60 line-clamp-1">Network: Sol</p>
                                     </div>
                                 </button>
-
-                                <dialog id="all_wallet" className="modal">
-                                    <div className="modal-box">
-                                        <p className="text-2xl font-opensans font-bold">Connect wallet</p>
-                                        <p className="text-sm">Get start by connecting your preferred wallet below.</p>
-                                        <div style={{ marginTop: "10px" }}>
-                                            {wallets.map((wallet) => (
-                                                <div
-                                                    key={wallet.adapter.name}
-                                                    onClick={() => handleWalletClick(wallet.adapter.name)}
-                                                    className="flex items-center gap-3 my-4 cursor-pointer hover:bg-white/10 p-3 rounded-2xl relative"
-                                                >
-                                                    <img src={wallet?.adapter?.icon} alt={wallet.adapter.name} className="size-9 rounded-2xl" />
-                                                    <div>
-                                                        <p className="font-medium">{wallet.adapter.name}</p>
-                                                        <p className="text-xs opacity-50">Transaction Versions: {wallet.adapter.supportedTransactionVersions}</p>
-                                                    </div>
-                                                    {
-                                                        wallet?.adapter?.name === "Phantom" &&
-                                                        <p className="text-xs absolute right-3 font-montserrat">Recommend</p>
-                                                    }
-                                                </div>
-                                            ))}
-                                        </div>
-
-                                        <p className="font-monda">By connecting your wallet, you're agree to our <span className="text-blue-400">Terms of service</span> and our <span className="text-blue-400">privacy policy</span></p>
-                                    </div>
-                                    <form method="dialog" className="modal-backdrop">
-                                        <button>close</button>
-                                    </form>
-                                </dialog>
                             </div>
                         )
                         }
