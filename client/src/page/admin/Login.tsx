@@ -6,12 +6,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-    const { register, handleSubmit } = useForm({
-        defaultValues: {
-            email: "admin@gmail.com",
-            password: "1234"
-        }
-    });
+    const { register, handleSubmit } = useForm();
 
     const [mutation, { status, isLoading }] = admin.LoginUser();
     const navigate = useNavigate();
