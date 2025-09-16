@@ -311,7 +311,7 @@ const NewTaskModal = ({ projectId }: { projectId: number }) => {
                 (document.getElementById("new_task") as HTMLDialogElement).close();
                 break;
 
-            case QueryStatus.pending:
+            case QueryStatus.rejected:
                 toast.error((error as RTKErrorTypes)?.data?.msg || "Something went wrong");
                 setLoading(false);
                 break;
