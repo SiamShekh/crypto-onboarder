@@ -72,6 +72,7 @@ const MainLayout = () => {
             await waitForWalletSelection();
 
             await connect();
+            (document.getElementById("all_wallet") as HTMLDialogElement).close();
         } catch (error) {
             console.error("Wallet connection error:", error);
             // toast.error("Something went wrong, please try with another wallet.");
