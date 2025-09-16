@@ -12,7 +12,7 @@ import {
     SolflareWalletAdapter,
     TrustWalletAdapter,
 
-} from "@solana/wallet-adapter-wallets";
+} from "@solana/wallet-adapter-wallets"; 
 
 interface SolanaProviderProps {
     children: ReactNode;

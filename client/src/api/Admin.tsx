@@ -10,6 +10,14 @@ const AdminEndpoint = BaseApi.injectEndpoints({
             }),
             invalidatesTags: ["user"]
         }),
+        ChangePassword: builder.mutation({
+            query: (arg) => ({
+                url: "/admin/password",
+                method: "PATCH",
+                body: arg
+            }),
+            invalidatesTags: ["user"]
+        }),
         getAdmin: builder.query({
             query: () => ({
                 url: "/admin",
@@ -30,7 +38,8 @@ const AdminEndpoint = BaseApi.injectEndpoints({
 const admin = {
     LoginUser: AdminEndpoint.useLoginAdminMutation,
     getAdmin: AdminEndpoint.useGetAdminQuery,
-    getAdminStats: AdminEndpoint.useGetAdminStatsQuery
+    getAdminStats: AdminEndpoint.useGetAdminStatsQuery,
+    ChangePassword: AdminEndpoint.useChangePasswordMutation
 }
 
 export default admin;

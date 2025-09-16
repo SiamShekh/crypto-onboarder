@@ -93,6 +93,13 @@ const getSpacificProject = CatchAsync(async (req, res) => {
         },
         include: {
             ProjectReferrel: {
+                orderBy: {
+                    user: {
+                        ProjectReferrel: {
+                            _count: "desc",
+                        },
+                    },
+                },
                 select: {
                     user: {
                         include: {
@@ -106,10 +113,10 @@ const getSpacificProject = CatchAsync(async (req, res) => {
                                 },
                             },
                         },
-                    }
+                    },
                 },
                 take: 5,
-                distinct: ["userId"]
+                distinct: ["userId"],
             },
             task: true,
         }

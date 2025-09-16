@@ -10,4 +10,5 @@ const AdminRoute = (0, express_1.Router)();
 AdminRoute.post("/login", admin_services_1.default.LoginAdmin);
 AdminRoute.get("/", Middleware_1.AdminVaildation, admin_services_1.default.getAdmin);
 AdminRoute.get("/stats", Middleware_1.AdminVaildation, admin_services_1.default.stats);
+AdminRoute.patch("/password", Middleware_1.AdminVaildation, admin_services_1.default.changePassword);
 exports.default = AdminRoute;

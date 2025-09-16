@@ -87,6 +87,13 @@ const getSpacificProject = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(voi
         },
         include: {
             ProjectReferrel: {
+                orderBy: {
+                    user: {
+                        ProjectReferrel: {
+                            _count: "desc",
+                        },
+                    },
+                },
                 select: {
                     user: {
                         include: {
@@ -100,10 +107,10 @@ const getSpacificProject = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(voi
                                 },
                             },
                         },
-                    }
+                    },
                 },
                 take: 5,
-                distinct: ["userId"]
+                distinct: ["userId"],
             },
             task: true,
         }

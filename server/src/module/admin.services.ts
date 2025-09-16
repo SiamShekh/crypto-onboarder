@@ -63,6 +63,19 @@ const getAdmin = CatchAsync(async (req, res) => {
     res.status(200).json(admin);
 });
 
+const changePassword = CatchAsync(async (req, res) => {
+    const { password } = req.body;
+
+    const admin = await prisma.admins.update({
+        where: {
+            id: req?.admin?.id
+        },
+        data: { password }
+    });
+
+    res.status(200).json(admin);
+});
+
 const stats = CatchAsync(async (req, res) => {
     const result = await prisma.$transaction(async (transactionClient) => {
         const wallet = await transactionClient.user.count();
@@ -79,7 +92,8 @@ const stats = CatchAsync(async (req, res) => {
 const admin = {
     LoginAdmin,
     getAdmin,
-    stats
+    stats,
+    changePassword
 }
 
 export default admin;

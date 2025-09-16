@@ -69,6 +69,17 @@ const getAdmin = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 
     });
     res.status(200).json(admin);
 }));
+const changePassword = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const { password } = req.body;
+    const admin = yield __1.prisma.admins.update({
+        where: {
+            id: (_a = req === null || req === void 0 ? void 0 : req.admin) === null || _a === void 0 ? void 0 : _a.id
+        },
+        data: { password }
+    });
+    res.status(200).json(admin);
+}));
 const stats = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield __1.prisma.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
         const wallet = yield transactionClient.user.count();
@@ -81,6 +92,7 @@ const stats = (0, Utilite_1.CatchAsync)((req, res) => __awaiter(void 0, void 0, 
 const admin = {
     LoginAdmin,
     getAdmin,
-    stats
+    stats,
+    changePassword
 };
 exports.default = admin;

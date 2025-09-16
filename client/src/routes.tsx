@@ -17,6 +17,7 @@ import Privacy from "./page/Privacy";
 import MoreInfoProject from "./page/MoreInfoProject";
 import RefererInfo from "./page/RefererInfo";
 import ErrorBoundary from "./components/one-time/ErrorBoundary";
+import Admin from "./page/admin/Admin";
 
 const Routes = createBrowserRouter([
     {
@@ -84,6 +85,10 @@ const Routes = createBrowserRouter([
             {
                 path: "project",
                 element: <Project />
+            },
+            {
+                path: "info",
+                element: <Admin />
             },
         ]
     },

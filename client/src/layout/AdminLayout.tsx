@@ -1,4 +1,4 @@
-import { MdManageAccounts, MdOutlineSpaceDashboard } from "react-icons/md";
+import { MdManageAccounts, MdOutlineSpaceDashboard, MdPassword } from "react-icons/md";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import icon from "../assets/icon.webp";
 import { AiOutlineMenu } from "react-icons/ai";
@@ -27,12 +27,12 @@ const AdminLayout = () => {
             icon: <FaList />,
             href: "/admin/project"
         },
-        // {
-        //     id: 1,
-        //     title: "Dashboard",
-        //     icon: <MdOutlineSpaceDashboard />,
-        //     href: "/"
-        // },
+        {
+            id: 4,
+            title: "Change Password",
+            icon: <MdPassword />,
+            href: "/admin/info"
+        },
         // {
         //     id: 1,
         //     title: "Dashboard",
